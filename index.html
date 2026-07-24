@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI Safe Gateway 企業管理ポータル">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <title>AI Safe Gateway | 企業管理ポータル</title>
+  <link rel="stylesheet" href="styles.css?v=0.2.2">
+</head>
+<body>
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+  <main id="authShell" class="auth-shell">
+    <section class="auth-brand" aria-label="AI Safe Gatewayの説明">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><path d="M32 5 53 13v16c0 14-8 24-21 30C19 53 11 43 11 29V13L32 5Z"/><rect x="24" y="28" width="16" height="14" rx="3"/><path d="M27 28v-5a5 5 0 0 1 10 0v5"/></svg>
+      </div>
+      <p class="eyebrow">AI UTILIZATION CONTROL</p>
+      <h1>AI活用を、<br><span>安全と成果</span>の両面から。</h1>
+      <p class="auth-lead">ライセンス、利用端末、匿名化の利用状況を企業単位で管理します。原文・辞書・対応表は収集しません。</p>
+      <div class="privacy-flow" aria-label="データの流れ">
+        <div><strong>顧客PC</strong><small>文書をローカル処理</small></div>
+        <span aria-hidden="true">→</span>
+        <div><strong>匿名集計</strong><small>件数だけを送信</small></div>
+        <span aria-hidden="true">→</span>
+        <div><strong>管理画面</strong><small>工数削減を可視化</small></div>
+      </div>
+      <div class="privacy-badges">
+        <span>原文なし</span><span>ファイル名なし</span><span>辞書なし</span>
+      </div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-card">
+        <div class="auth-card-head">
+          <div class="portal-logo"><span>ASG</span><strong>企業管理ポータル</strong></div>
+          <span id="environmentBadge" class="environment-badge">DEMO</span>
+        </div>
+        <div class="auth-tabs" role="tablist" aria-label="認証方法">
+          <button id="loginTab" class="auth-tab active" type="button" role="tab">ログイン</button>
+          <button id="registerTab" class="auth-tab" type="button" role="tab">企業を登録</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div class="form-heading"><h2>おかえりなさい</h2><p>企業アカウントでログインしてください。</p></div>
+          <label>メールアドレス<input id="loginEmail" type="email" autocomplete="email" required placeholder="admin@example.jp"></label>
+          <label>パスワード<input id="loginPassword" type="password" autocomplete="current-password" required minlength="8" placeholder="8文字以上"></label>
+          <button id="forgotPassword" class="form-link" type="button">パスワードを忘れた場合</button>
+          <button class="primary-button" type="submit">ログイン</button>
+          <button id="demoLogin" class="demo-button" type="button">デモ画面を確認</button>
+          <p class="form-note">本番環境ではSupabase Authで認証します。</p>
+        </form>
+
+        <form id="registerForm" class="auth-form" hidden>
+          <div class="form-heading"><h2>企業アカウントを作成</h2><p>最初の登録者が企業管理者になります。</p></div>
+          <div class="form-grid">
+            <label>会社名<input id="registerCompany" required maxlength="120" placeholder="株式会社サンプル"></label>
+            <label>担当者名<input id="registerName" required maxlength="80" placeholder="山田 太郎"></label>
+          </div>
+          <label>メールアドレス<input id="registerEmail" type="email" autocomplete="email" required placeholder="admin@example.jp"></label>
+          <label>パスワード<input id="registerPassword" type="password" autocomplete="new-password" required minlength="12" placeholder="英数字を含む12文字以上"></label>
+          <label class="consent"><input id="registerConsent" type="checkbox" required><span><a href="terms.html" target="_blank">利用規約</a>と<a href="privacy.html" target="_blank">プライバシー方針</a>を確認し、匿名集計の初期設定がOFFであることを理解しました。</span></label>
+          <button class="primary-button" type="submit">企業アカウントを作成</button>
+          <p class="form-note">メール確認後にログインすると登録が完了します。</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="portalShell" class="portal-shell" hidden>
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="mini-shield">ASG</div>
+        <div><strong>AI Safe Gateway</strong><small>企業管理ポータル</small></div>
+      </div>
+      <nav aria-label="メインメニュー">
+        <button class="nav-button active" data-view="dashboard"><span>▦</span>活用効果ダッシュボード</button>
+        <button class="nav-button" data-view="licenses"><span>◇</span>ライセンス・端末</button>
+        <button class="nav-button" data-view="mypage"><span>○</span>企業マイページ</button>
+      </nav>
+      <div class="sidebar-privacy"><strong>収集しない情報</strong><p>原文・マスク本文・辞書・対応表・AI回答</p></div>
+      <button id="logoutButton" class="logout-button" type="button">ログアウト</button>
+    </aside>
+
+    <div class="portal-main">
+      <header class="topbar">
+        <button id="menuButton" class="menu-button" type="button" aria-label="メニューを開く">☰</button>
+        <div><p id="companyNameHeader">企業名</p><small id="companyCodeHeader">企業ID</small></div>
+        <div class="topbar-actions"><span id="syncStatus" class="sync-status"><i></i>最新データ</span><button id="refreshButton" type="button">更新</button><div id="userAvatar" class="avatar">管</div></div>
+      </header>
+
+      <main class="content">
+        <section id="dashboardView" class="view active">
+          <div class="page-heading">
+            <div><p class="eyebrow dark">EXECUTIVE OVERVIEW</p><h2>AI活用・安全・業務効果</h2><p>利用定着、安全運用、活用領域、削減時間を本文なしで確認します。</p></div>
+            <div class="dashboard-controls"><button id="openRoiSettings" class="secondary-button compact" type="button">時間の試算条件</button><select id="periodSelect" aria-label="集計期間"><option value="30">直近30日</option><option value="90">直近90日</option><option value="all">全期間</option></select></div>
+          </div>
+          <div class="privacy-strip"><span class="privacy-icon">✓</span><div><strong>本文を使わずに集計しています</strong><small>文書名・検出語・辞書・対応表・AI回答は送信しません。</small></div><button id="showPayloadButton" type="button">送信項目を確認</button></div>
+          <section id="executiveSummary" class="executive-summary" aria-label="経営サマリー"></section>
+          <div id="kpiGrid" class="outcome-grid"></div>
+          <div class="decision-grid">
+            <article class="panel adoption-panel"><div class="panel-head"><div><p class="panel-kicker">USAGE</p><h3>どれほど使われているか</h3><p>文書数・端末・利用密度から定着度を確認</p></div><button class="text-button" data-go="licenses">端末を見る</button></div><div id="adoptionDetails"></div></article>
+            <article class="panel safety-panel"><div class="panel-head"><div><p class="panel-kicker">SAFETY</p><h3>安全に使われているか</h3><p>確認・修正・処理成功の代理指標</p></div></div><div id="safetyDetails"></div></article>
+            <article class="panel effectiveness-panel"><div class="panel-head"><div><p class="panel-kicker">VALUE</p><h3>有効活用できているか</h3><p>選択された業務用途と回答品質の確認状況</p></div></div><div id="useCaseDetails"></div></article>
+            <article class="panel impact-panel"><div class="panel-head"><div><p class="panel-kicker">TIME SAVED</p><h3>どれだけ時間を削減できたか</h3><p>自動確認による作業時間の削減試算</p></div></div><div id="impactDetails"></div></article>
+          </div>
+          <div class="dashboard-lower-grid">
+            <article class="panel chart-panel"><div class="panel-head"><div><h3>利用推移</h3><p>安全化して出力した文書数</p></div><span id="chartTotal" class="panel-total"></span></div><div id="usageChart" class="usage-chart" aria-label="文書処理件数の推移"></div></article>
+            <article class="panel action-panel"><div class="panel-head"><div><h3>次に確認すること</h3><p>数値から判断した優先アクション</p></div></div><div id="insightList" class="insight-list"></div></article>
+          </div>
+        </section>
+
+        <section id="licensesView" class="view">
+          <div class="page-heading"><div><p class="eyebrow dark">LICENSE CONTROL</p><h2>ライセンス・端末</h2><p>契約ライセンスと認証されたPCを確認します。</p></div><button id="openLicenseModal" class="primary-small" type="button">ライセンスを発行</button></div>
+          <div id="licenseSummary" class="summary-strip"></div>
+          <article class="panel table-panel"><div class="panel-head"><div><h3>ライセンス一覧</h3><p>停止すると次回認証後に書込み機能が無効になります。</p></div></div><div class="table-scroll"><table><thead><tr><th>名称</th><th>プラン</th><th>端末</th><th>有効期限</th><th>状態</th></tr></thead><tbody id="licenseRows"></tbody></table></div></article>
+          <article class="panel table-panel"><div class="panel-head"><div><h3>認証端末</h3><p>PC名や利用文書は収集しません。</p></div></div><div class="table-scroll"><table><thead><tr><th>端末ID</th><th>アプリ</th><th>最終認証</th><th>状態</th></tr></thead><tbody id="deviceRows"></tbody></table></div></article>
+        </section>
+
+        <section id="mypageView" class="view">
+          <div class="page-heading"><div><p class="eyebrow dark">COMPANY ACCOUNT</p><h2>企業マイページ</h2><p>契約・企業ID・管理者情報を確認します。</p></div></div>
+          <div class="mypage-grid">
+            <article class="panel company-card"><div class="company-emblem" id="companyEmblem">A</div><div><small>企業アカウント</small><h3 id="myCompanyName"></h3><span id="companyStatusBadge" class="status-badge"></span></div></article>
+            <article class="panel details-card"><h3>企業情報</h3><dl id="companyDetails"></dl><button id="copyCompanyId" class="secondary-button" type="button">企業IDをコピー</button></article>
+            <article class="panel details-card"><h3>管理者情報</h3><dl id="memberDetails"></dl></article>
+            <article class="panel security-card"><h3>通信・プライバシー</h3><div class="security-list"><div><span>✓</span><p><strong>原文は送信しない</strong><small>PC内で処理します</small></p></div><div><span>✓</span><p><strong>匿名集計だけを受信</strong><small>件数と率に限定します</small></p></div><div><span>✓</span><p><strong>企業単位でアクセス制御</strong><small>RLSで他社データを分離します</small></p></div></div></article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="payloadDialog" class="modal"><div class="modal-head"><div><h2>サーバーへ送る項目</h2><p>経営指標の算出に必要な匿名集計値だけです。</p></div><button class="icon-button" data-close="payloadDialog" aria-label="閉じる">×</button></div><div class="payload-list"><span>会社ID</span><span>ハッシュ化ライセンスID</span><span>端末ハッシュ</span><span>処理・失敗件数</span><span>確認・修正件数</span><span>選択用途の件数</span><span>品質比較の件数・合計値</span></div><pre id="payloadPreview"></pre><div class="modal-actions"><button class="secondary-button" data-close="payloadDialog">閉じる</button></div></dialog>
+
+  <dialog id="roiSettingsDialog" class="modal"><form id="roiSettingsForm"><div class="modal-head"><div><h2>削減時間の試算条件</h2><p>本文とは無関係な前提値です。このブラウザ内だけに保存します。</p></div><button class="icon-button" type="button" data-close="roiSettingsDialog" aria-label="閉じる">×</button></div><div class="form-grid single-field"><label>自動確認1件の削減秒数<input id="roiReviewSeconds" type="number" min="1" max="600" step="1" required><small>人が候補1件を確認し、判断するまでの平均時間</small></label></div><p class="modal-note">削減時間＝自動確認された候補数×削減秒数。実測値ではなく、管理者が設定した条件による試算です。</p><div class="modal-actions"><button id="resetRoiSettings" class="secondary-button" type="button">推奨値に戻す</button><button class="primary-small" type="submit">条件を反映</button></div></form></dialog>
+
+  <dialog id="licenseDialog" class="modal"><form id="licenseForm"><div class="modal-head"><div><h2>試用ライセンスを発行</h2><p>発行後、署名済みライセンスファイルを保存します。</p></div><button class="icon-button" type="button" data-close="licenseDialog" aria-label="閉じる">×</button></div><div class="form-grid"><label>ライセンス名<input id="licenseLabel" required maxlength="80" value="PoC評価用"></label><label>端末上限<input id="licenseSeats" type="number" min="1" max="500" value="10" required></label><label>プラン<select id="licenseEdition"><option>Business</option><option>Professional</option><option>Enterprise</option></select></label><label>有効日数<input id="licenseDays" type="number" min="1" max="1095" value="30" required></label></div><p class="modal-note">初回ファイルのオフライン期限は1日です。PCでオンライン更新すると30日に延長され、端末へ紐づきます。</p><div class="modal-actions"><button class="secondary-button" type="button" data-close="licenseDialog">キャンセル</button><button class="primary-small" type="submit">発行して保存</button></div></form></dialog>
+
+  <dialog id="passwordDialog" class="modal"><form id="passwordRequestForm"><div class="modal-head"><div><h2>パスワードを再設定</h2><p>登録メールアドレスへ再設定リンクを送ります。</p></div><button class="icon-button" type="button" data-close="passwordDialog" aria-label="閉じる">×</button></div><label>メールアドレス<input id="passwordEmail" type="email" required placeholder="admin@example.jp"></label><div class="modal-actions"><button class="secondary-button" type="button" data-close="passwordDialog">キャンセル</button><button class="primary-small" type="submit">再設定メールを送信</button></div></form></dialog>
+
+  <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
+
+  <script src="config.js"></script>
+  <script type="module" src="app.js?v=0.2.2"></script>
+</body>
+</html>

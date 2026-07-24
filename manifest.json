@@ -1,0 +1,30 @@
+﻿[
+    {
+        "file":  "index.html",
+        "sha256":  "5ca750904942d59dc6e2839c63375b606e564bb165b95140e419a39d47e5f4aa"
+    },
+    {
+        "file":  "app.js",
+        "sha256":  "e8a84493e7508b8677e867385631d78d41f36c6d2b9e335a1b1bf6c410c28f30"
+    },
+    {
+        "file":  "styles.css",
+        "sha256":  "6993c28ce06634c59b6c097d6d7286b90eb8e36b661310b9059a4c2f786be571"
+    },
+    {
+        "file":  "config.js",
+        "sha256":  "57dd5b47dd7a4c688672b8e31e17bb53190eb3f77e91d337930926e10fdc1697"
+    },
+    {
+        "file":  "terms.html",
+        "sha256":  "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
+    },
+    {
+        "file":  "privacy.html",
+        "sha256":  "9de39bbb3e8f20602f66a39cf5da21b8e5ec033bda067bb5d262b8135708b10a"
+    },
+    {
+        "file":  "legal.css",
+        "sha256":  "5e8f4ac60177595479f374f23d93a467e0c97e0e89b3c2afe6ac602fd6a39bf7"
+    }
+]
