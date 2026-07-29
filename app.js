@@ -1,6 +1,8 @@
 const config = window.ASG_PORTAL_CONFIG || {};
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
+const SESSION_KEY = "asg_session";
+const REMEMBER_KEY = "asg_remember_login";
 
 const state = {
   session: null,
@@ -70,6 +72,24 @@ function showNotice(message, type = "success") {
   const node = $("#notice"); node.textContent = message; node.className = `notice ${type}`; node.hidden = false;
   clearTimeout(showNotice.timer); showNotice.timer = setTimeout(() => { node.hidden = true; }, 5000);
 }
+function friendlyError(error) {
+  const code = String(error?.message || error || "");
+  const messages = {
+    invalid_credentials: "メールアドレスまたはパスワードが正しくありません。",
+    email_not_confirmed: "確認メールのリンクを開いてからログインしてください。",
+    user_already_exists: "このメールアドレスは既に登録されています。",
+    weak_password: "より長く複雑なパスワードを設定してください。",
+    unauthorized: "認証の有効期限が切れました。もう一度ログインしてください。",
+    forbidden: "この操作を行う管理者権限がありません。",
+    company_already_registered: "企業登録は既に完了しています。",
+    license_not_active: "ライセンスが停止中、または有効期限切れです。",
+    seat_limit_reached: "利用可能な端末上限に達しています。",
+    trial_limit_reached: "評価版の発行上限を超えています。既存ライセンスをご利用ください。",
+    rate_limited: "操作が集中しています。少し待ってからやり直してください。",
+    invalid_request: "入力内容を確認してください。",
+  };
+  return messages[code] || code || "処理を完了できませんでした。";
+}
 function formatDate(value) {
   if (!value) return "—";
   return new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
@@ -102,11 +122,18 @@ async function invoke(name, body) {
   return fetchJson(`${base}/${name}`, { method: "POST", headers: sessionHeaders(), body: JSON.stringify(body) });
 }
 
-function saveSession(session) {
+function clearStoredSession() {
+  sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_KEY);
+}
+function saveSession(session, remember = localStorage.getItem(REMEMBER_KEY) !== "false") {
   state.session = session;
   state.user = session?.user || state.user;
   state.portalBootstrap = null;
-  sessionStorage.setItem("asg_session", JSON.stringify({ ...session, user: state.user }));
+  clearStoredSession();
+  const target = remember ? localStorage : sessionStorage;
+  target.setItem(SESSION_KEY, JSON.stringify({ ...session, user: state.user }));
+  localStorage.setItem(REMEMBER_KEY, remember ? "true" : "false");
 }
 
 async function refreshSession(refreshToken) {
@@ -152,9 +179,13 @@ async function completePendingCompany() {
   };
   if (!data.company_name || !data.display_name) return;
   try {
-    await invoke("register-company", data);
+    const result = await invoke("register-company", data);
     state.portalBootstrap = null;
     localStorage.removeItem("asg_pending_company");
+    if (result?.trial_license?.license_envelope) {
+      downloadLicenseEnvelope(result.trial_license.license_envelope, result.trial_license.license_id);
+      showNotice("企業登録が完了し、30日間のPoCライセンスを保存しました。");
+    }
   } catch (error) {
     if (error.message === "company_already_registered") {
       localStorage.removeItem("asg_pending_company");
@@ -168,9 +199,9 @@ $("#loginForm").addEventListener("submit", async event => {
   try {
     if (state.demo) return enterDemo();
     const result = await authRequest("token?grant_type=password", { email: $("#loginEmail").value.trim(), password: $("#loginPassword").value });
-    saveSession(result);
+    saveSession(result, $("#rememberLogin").checked);
     await completePendingCompany(); await loadPortal();
-  } catch (error) { showNotice(`ログインできません：${error.message}`, "error"); }
+  } catch (error) { showNotice(`ログインできません：${friendlyError(error)}`, "error"); }
 });
 $("#demoLogin").addEventListener("click", enterDemo);
 $("#forgotPassword").addEventListener("click", () => {
@@ -182,14 +213,14 @@ $("#passwordRequestForm").addEventListener("submit", async event => {
     if (state.demo) { showNotice("デモモードではメールを送信しません。", "error"); return; }
     await authRequest("recover", { email: $("#passwordEmail").value.trim(), redirect_to: `${location.origin}${location.pathname}` });
     $("#passwordDialog").close(); showNotice("再設定メールを送信しました。");
-  } catch (error) { showNotice(`送信できません：${error.message}`, "error"); }
+  } catch (error) { showNotice(`送信できません：${friendlyError(error)}`, "error"); }
 });
 $("#newPasswordForm").addEventListener("submit", async event => {
   event.preventDefault();
   try {
     await fetchJson(`${config.supabaseUrl}/auth/v1/user`, { method: "PUT", headers: sessionHeaders(), body: JSON.stringify({ password: $("#newPassword").value }) });
     $("#newPasswordDialog").close(); history.replaceState(null, "", location.pathname); showNotice("パスワードを変更しました。ログインしてください。");
-  } catch (error) { showNotice(`変更できません：${error.message}`, "error"); }
+  } catch (error) { showNotice(`変更できません：${friendlyError(error)}`, "error"); }
 });
 
 $("#registerForm").addEventListener("submit", async event => {
@@ -207,7 +238,7 @@ $("#registerForm").addEventListener("submit", async event => {
     } else {
       setAuthTab("login"); showNotice("確認メールを送信しました。確認後にログインすると企業登録が完了します。");
     }
-  } catch (error) { showNotice(`登録できません：${error.message}`, "error"); }
+  } catch (error) { showNotice(`登録できません：${friendlyError(error)}`, "error"); }
 });
 
 function enterDemo() {
@@ -233,6 +264,7 @@ function renderPortal() {
   $("#authShell").hidden = true; $("#portalShell").hidden = false;
   $("#companyNameHeader").textContent = state.company.name; $("#companyCodeHeader").textContent = `企業ID ${state.company.company_code}`;
   $("#userAvatar").textContent = (state.member.display_name || state.user.email || "管").slice(0, 1);
+  $("#openLicenseModal").hidden = !["owner","admin"].includes(state.member?.role);
   renderDashboard(); renderLicenses(); renderMyPage();
 }
 
@@ -362,10 +394,23 @@ $("#resetRoiSettings").addEventListener("click", () => {
 });
 
 function renderLicenses() {
-  const totalSeats = state.licenses.reduce((sum, item) => sum + Number(item.seats || 0), 0); const activeDevices = state.devices.filter(item => item.active).length;
-  $("#licenseSummary").innerHTML = [["契約ライセンス",state.licenses.length],["端末上限",totalSeats],["利用中",activeDevices],["残り",Math.max(0,totalSeats-activeDevices)]].map(([label,value])=>`<div class="summary-cell"><small>${label}</small><strong>${formatNumber(value)}</strong></div>`).join("");
-  $("#licenseRows").innerHTML = state.licenses.length ? state.licenses.map(item => { const used = state.devices.filter(device => device.license_id === item.id && device.active).length; return `<tr><td><strong>${escapeHtml(item.label)}</strong><br><code>${escapeHtml(item.id.slice(0,8))}…</code></td><td>${escapeHtml(item.edition)}</td><td>${used} / ${item.seats}</td><td>${formatDate(item.expires_at)}</td><td><span class="status-badge ${item.status === "active" ? "" : "danger"}">${item.status === "active" ? "有効" : "停止"}</span></td></tr>`; }).join("") : `<tr><td colspan="5">ライセンスはありません。</td></tr>`;
-  $("#deviceRows").innerHTML = state.devices.length ? state.devices.map(item => `<tr><td><code>${escapeHtml(item.device_hash.slice(0,18))}…</code></td><td>${escapeHtml(item.app_version || "—")}</td><td>${formatDate(item.last_seen_at)}</td><td><span class="status-badge ${item.active ? "" : "danger"}">${item.active ? "利用中" : "停止"}</span></td></tr>`).join("") : `<tr><td colspan="4">認証端末はありません。</td></tr>`;
+  const totalSeats = state.licenses.filter(item => item.status === "active").reduce((sum, item) => sum + Number(item.seats || 0), 0);
+  const activeDevices = state.devices.filter(item => item.active).length;
+  const activeExpiry = state.licenses.filter(item => item.status === "active").map(item => new Date(item.expires_at)).sort((a,b)=>a-b)[0];
+  const trialDays = activeExpiry ? Math.max(0, Math.ceil((activeExpiry - new Date()) / 86400000)) : 0;
+  const canManage = ["owner","admin"].includes(state.member?.role);
+  $("#licenseSummary").innerHTML = [["有効ライセンス",state.licenses.filter(item=>item.status==="active").length],["端末上限",totalSeats],["利用中",activeDevices],[state.company.status === "trial" ? "評価版 残り" : "利用可能",state.company.status === "trial" ? `${trialDays}日` : Math.max(0,totalSeats-activeDevices)]].map(([label,value])=>`<div class="summary-cell"><small>${label}</small><strong>${typeof value === "number" ? formatNumber(value) : escapeHtml(value)}</strong></div>`).join("");
+  $("#licenseRows").innerHTML = state.licenses.length ? state.licenses.map(item => {
+    const used = state.devices.filter(device => device.license_id === item.id && device.active).length;
+    const active = item.status === "active";
+    const action = active ? "suspend" : "activate";
+    const actionLabel = active ? "一時停止" : "再開";
+    return `<tr><td><strong>${escapeHtml(item.label)}</strong><br><code>${escapeHtml(item.id.slice(0,8))}…</code></td><td>${escapeHtml(item.edition)}</td><td>${used} / ${item.seats}</td><td>${formatDate(item.expires_at)}</td><td><span class="status-badge ${active ? "" : "danger"}">${active ? "有効" : "停止"}</span></td><td>${canManage && !["expired","cancelled"].includes(item.status) ? `<button class="row-action ${active ? "danger-outline" : ""}" type="button" data-license-id="${escapeHtml(item.id)}" data-license-action="${action}">${actionLabel}</button>` : "—"}</td></tr>`;
+  }).join("") : `<tr><td colspan="6">ライセンスはありません。</td></tr>`;
+  $("#deviceRows").innerHTML = state.devices.length ? state.devices.map(item => {
+    const action = item.active ? "deactivate" : "reactivate";
+    return `<tr><td><code>${escapeHtml(item.device_hash.slice(0,18))}…</code><br><small>初回 ${formatDate(item.first_seen_at)}</small></td><td>${escapeHtml(item.app_version || "—")}</td><td>${formatDate(item.last_seen_at)}</td><td><span class="status-badge ${item.active ? "" : "danger"}">${item.active ? "利用中" : "解除済み"}</span></td><td>${canManage ? `<button class="row-action ${item.active ? "danger-outline" : ""}" type="button" data-device-id="${escapeHtml(item.id)}" data-device-action="${action}">${item.active ? "端末を解除" : "再登録"}</button>` : "—"}</td></tr>`;
+  }).join("") : `<tr><td colspan="5">認証端末はありません。</td></tr>`;
 }
 function renderMyPage() {
   $("#myCompanyName").textContent = state.company.name; $("#companyEmblem").textContent = state.company.name.replace(/株式会社|有限会社/g, "").trim().slice(0,1) || "A";
@@ -389,17 +434,54 @@ $("#copyCompanyId").addEventListener("click", async () => { await navigator.clip
 $("#refreshButton").addEventListener("click", async () => { try { if (!state.demo) await loadPortal(); else renderPortal(); showNotice("最新状態へ更新しました。"); } catch (error) { showNotice(error.message,"error"); } });
 $("#logoutButton").addEventListener("click", async () => {
   try { if (!state.demo && state.session) await fetch(`${config.supabaseUrl}/auth/v1/logout`, { method:"POST", headers:sessionHeaders() }); } catch {}
-  sessionStorage.removeItem("asg_session"); location.reload();
+  clearStoredSession(); location.reload();
 });
+
+function downloadLicenseEnvelope(envelope, licenseId) {
+  const blob = new Blob([JSON.stringify(envelope, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${licenseId}.asglicense`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+}
 
 $("#licenseForm").addEventListener("submit", async event => {
   event.preventDefault();
   try {
     if (state.demo) { showNotice("デモモードではライセンスを発行しません。Supabase接続後に利用できます。", "error"); return; }
     const result = await invoke("admin-create-license", { label: $("#licenseLabel").value.trim(), seats: Number($("#licenseSeats").value), edition: $("#licenseEdition").value, valid_days: Number($("#licenseDays").value) });
-    const blob = new Blob([JSON.stringify(result.license_envelope, null, 2)], { type: "application/json" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `${result.license_id}.asglicense`; link.click(); URL.revokeObjectURL(link.href);
+    downloadLicenseEnvelope(result.license_envelope, result.license_id);
     $("#licenseDialog").close(); await loadPortal(); showNotice("署名済みライセンスを発行しました。");
-  } catch (error) { showNotice(`発行できません：${error.message}`, "error"); }
+  } catch (error) { showNotice(`発行できません：${friendlyError(error)}`, "error"); }
+});
+
+$("#licenseRows").addEventListener("click", async event => {
+  const button = event.target.closest("[data-license-action]");
+  if (!button || state.demo) return;
+  const suspend = button.dataset.licenseAction === "suspend";
+  if (!confirm(suspend ? "このライセンスを一時停止しますか？次回認証後に書込み機能が停止します。" : "このライセンスを再開しますか？")) return;
+  button.disabled = true;
+  try {
+    await invoke("admin-license-action", { license_id: button.dataset.licenseId, action: button.dataset.licenseAction });
+    await loadPortal();
+    showNotice(suspend ? "ライセンスを一時停止しました。" : "ライセンスを再開しました。");
+  } catch (error) { showNotice(`変更できません：${friendlyError(error)}`, "error"); }
+  finally { button.disabled = false; }
+});
+
+$("#deviceRows").addEventListener("click", async event => {
+  const button = event.target.closest("[data-device-action]");
+  if (!button || state.demo) return;
+  const deactivate = button.dataset.deviceAction === "deactivate";
+  if (!confirm(deactivate ? "この端末の利用登録を解除しますか？再び使うにはオンライン認証が必要です。" : "この端末を再登録しますか？")) return;
+  button.disabled = true;
+  try {
+    await invoke("admin-device-action", { device_id: button.dataset.deviceId, action: button.dataset.deviceAction });
+    await loadPortal();
+    showNotice(deactivate ? "端末登録を解除しました。" : "端末を再登録しました。");
+  } catch (error) { showNotice(`変更できません：${friendlyError(error)}`, "error"); }
+  finally { button.disabled = false; }
 });
 
 async function restoreSession() {
@@ -415,9 +497,10 @@ async function restoreSession() {
       history.replaceState(null, "", location.pathname);
       await completePendingCompany(); await loadPortal(); return;
     }
-    const cached = JSON.parse(sessionStorage.getItem("asg_session") || "null"); if (!cached?.access_token) return;
+    $("#rememberLogin").checked = localStorage.getItem(REMEMBER_KEY) !== "false";
+    const cached = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || "null"); if (!cached?.access_token) return;
     await restoreAuthenticatedSession(cached);
     await completePendingCompany(); await loadPortal();
-  } catch { sessionStorage.removeItem("asg_session"); }
+  } catch { clearStoredSession(); }
 }
 restoreSession();

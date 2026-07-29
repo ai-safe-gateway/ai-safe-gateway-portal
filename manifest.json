@@ -1,15 +1,15 @@
 ﻿[
     {
         "file":  "index.html",
-        "sha256":  "5ca750904942d59dc6e2839c63375b606e564bb165b95140e419a39d47e5f4aa"
+        "sha256":  "8552b6ce2a58ecbeb5213e13650e5d796b7db70a140e0936bedc9851015463a2"
     },
     {
         "file":  "app.js",
-        "sha256":  "e8a84493e7508b8677e867385631d78d41f36c6d2b9e335a1b1bf6c410c28f30"
+        "sha256":  "519e0724c3c087ee19f4a95614bf0a2b0e3921e50bfd5309a5f8ad00f54cd7cd"
     },
     {
         "file":  "styles.css",
-        "sha256":  "6993c28ce06634c59b6c097d6d7286b90eb8e36b661310b9059a4c2f786be571"
+        "sha256":  "f11511a33049a6b09eff77bb17aba788a0d56e9eb3c653539f91c4cdcc1d1b6b"
     },
     {
         "file":  "config.js",

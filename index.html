@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>AI Safe Gateway | 企業管理ポータル</title>
-  <link rel="stylesheet" href="styles.css?v=0.2.2">
+  <link rel="stylesheet" href="styles.css?v=0.3.0">
 </head>
 <body>
   <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
@@ -47,6 +47,7 @@
           <div class="form-heading"><h2>おかえりなさい</h2><p>企業アカウントでログインしてください。</p></div>
           <label>メールアドレス<input id="loginEmail" type="email" autocomplete="email" required placeholder="admin@example.jp"></label>
           <label>パスワード<input id="loginPassword" type="password" autocomplete="current-password" required minlength="8" placeholder="8文字以上"></label>
+          <label class="consent compact-consent"><input id="rememberLogin" type="checkbox" checked><span>このブラウザでログイン状態を保持する</span></label>
           <button id="forgotPassword" class="form-link" type="button">パスワードを忘れた場合</button>
           <button class="primary-button" type="submit">ログイン</button>
           <button id="demoLogin" class="demo-button" type="button">デモ画面を確認</button>
@@ -115,8 +116,8 @@
         <section id="licensesView" class="view">
           <div class="page-heading"><div><p class="eyebrow dark">LICENSE CONTROL</p><h2>ライセンス・端末</h2><p>契約ライセンスと認証されたPCを確認します。</p></div><button id="openLicenseModal" class="primary-small" type="button">ライセンスを発行</button></div>
           <div id="licenseSummary" class="summary-strip"></div>
-          <article class="panel table-panel"><div class="panel-head"><div><h3>ライセンス一覧</h3><p>停止すると次回認証後に書込み機能が無効になります。</p></div></div><div class="table-scroll"><table><thead><tr><th>名称</th><th>プラン</th><th>端末</th><th>有効期限</th><th>状態</th></tr></thead><tbody id="licenseRows"></tbody></table></div></article>
-          <article class="panel table-panel"><div class="panel-head"><div><h3>認証端末</h3><p>PC名や利用文書は収集しません。</p></div></div><div class="table-scroll"><table><thead><tr><th>端末ID</th><th>アプリ</th><th>最終認証</th><th>状態</th></tr></thead><tbody id="deviceRows"></tbody></table></div></article>
+          <article class="panel table-panel"><div class="panel-head"><div><h3>ライセンス一覧</h3><p>停止すると次回認証後に書込み機能が無効になります。</p></div></div><div class="table-scroll"><table><thead><tr><th>名称</th><th>プラン</th><th>端末</th><th>有効期限</th><th>状態</th><th>操作</th></tr></thead><tbody id="licenseRows"></tbody></table></div></article>
+          <article class="panel table-panel"><div class="panel-head"><div><h3>認証端末</h3><p>PC名や利用文書は収集しません。端末IDは一方向ハッシュです。</p></div></div><div class="table-scroll"><table><thead><tr><th>端末ID</th><th>アプリ</th><th>最終認証</th><th>状態</th><th>操作</th></tr></thead><tbody id="deviceRows"></tbody></table></div></article>
         </section>
 
         <section id="mypageView" class="view">
@@ -143,6 +144,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.2.2"></script>
+  <script type="module" src="app.js?v=0.3.0"></script>
 </body>
 </html>
