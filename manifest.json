@@ -1,30 +1,30 @@
-﻿[
-    {
-        "file":  "index.html",
-        "sha256":  "8552b6ce2a58ecbeb5213e13650e5d796b7db70a140e0936bedc9851015463a2"
-    },
-    {
-        "file":  "app.js",
-        "sha256":  "519e0724c3c087ee19f4a95614bf0a2b0e3921e50bfd5309a5f8ad00f54cd7cd"
-    },
-    {
-        "file":  "styles.css",
-        "sha256":  "f11511a33049a6b09eff77bb17aba788a0d56e9eb3c653539f91c4cdcc1d1b6b"
-    },
-    {
-        "file":  "config.js",
-        "sha256":  "57dd5b47dd7a4c688672b8e31e17bb53190eb3f77e91d337930926e10fdc1697"
-    },
-    {
-        "file":  "terms.html",
-        "sha256":  "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
-    },
-    {
-        "file":  "privacy.html",
-        "sha256":  "9de39bbb3e8f20602f66a39cf5da21b8e5ec033bda067bb5d262b8135708b10a"
-    },
-    {
-        "file":  "legal.css",
-        "sha256":  "5e8f4ac60177595479f374f23d93a467e0c97e0e89b3c2afe6ac602fd6a39bf7"
-    }
+[
+  {
+    "file": "index.html",
+    "sha256": "c060fa67bd70dcc3fc29c19b1310351bd3ca0c23de0157720fd0ca700a53480b"
+  },
+  {
+    "file": "app.js",
+    "sha256": "21a8442e5c4c3a6cc3ac94f78d5943d789139b476b09a6f06160e3276c69814f"
+  },
+  {
+    "file": "styles.css",
+    "sha256": "f11511a33049a6b09eff77bb17aba788a0d56e9eb3c653539f91c4cdcc1d1b6b"
+  },
+  {
+    "file": "config.js",
+    "sha256": "57dd5b47dd7a4c688672b8e31e17bb53190eb3f77e91d337930926e10fdc1697"
+  },
+  {
+    "file": "terms.html",
+    "sha256": "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
+  },
+  {
+    "file": "privacy.html",
+    "sha256": "9de39bbb3e8f20602f66a39cf5da21b8e5ec033bda067bb5d262b8135708b10a"
+  },
+  {
+    "file": "legal.css",
+    "sha256": "5e8f4ac60177595479f374f23d93a467e0c97e0e89b3c2afe6ac602fd6a39bf7"
+  }
 ]
