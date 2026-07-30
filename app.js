@@ -160,6 +160,9 @@ function setAuthTab(tab) {
 }
 $("#loginTab").addEventListener("click", () => setAuthTab("login"));
 $("#registerTab").addEventListener("click", () => setAuthTab("register"));
+if (new URLSearchParams(location.search).get("mode") === "register") {
+  setAuthTab("register");
+}
 
 async function completePendingCompany() {
   if (!state.session || !state.user?.id) return;
@@ -373,7 +376,7 @@ function renderDashboard() {
   if (dominantUse?.[1] > 0) insights.push(["→", useAdvice[0], useAdvice[1]]);
   if (!insights.length) insights.push(["✓", "安定して運用中", "利用・安全・品質・削減時間に大きな注意点はありません。月次で傾向を確認してください。"]);
   $("#insightList").innerHTML = insights.slice(0, 3).map(([icon, title, copy]) => `<div class="insight"><span class="insight-icon">${icon}</span><div><strong>${escapeHtml(title)}</strong><small>${escapeHtml(copy)}</small></div></div>`).join("");
-  $("#payloadPreview").textContent = JSON.stringify({ company_id: state.company.id, license_id_hash: "SHA-256…", device_hash: "SHA-256…", app_version: "0.37.0", counts, time_assumption_sent: false, contains: { raw_text: false, file_names: false, detected_terms: false, dictionary_values: false, mapping_values: false, ai_answers: false } }, null, 2);
+  $("#payloadPreview").textContent = JSON.stringify({ company_id: state.company.id, license_id_hash: "SHA-256…", device_hash: "SHA-256…", app_version: "0.37.3", counts, time_assumption_sent: false, contains: { raw_text: false, file_names: false, detected_terms: false, dictionary_values: false, mapping_values: false, ai_answers: false } }, null, 2);
 }
 $("#periodSelect").addEventListener("change", renderDashboard);
 $("#openRoiSettings").addEventListener("click", () => {

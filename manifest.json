@@ -1,30 +1,62 @@
 [
   {
-    "file": "index.html",
-    "sha256": "c060fa67bd70dcc3fc29c19b1310351bd3ca0c23de0157720fd0ca700a53480b"
+    "file": ".github/workflows/deploy-pages.yml",
+    "sha256": "613eeed6313d47c133129c14e32157f06ba89c8ce7928ec806bcb617818b75cb"
+  },
+  {
+    "file": ".nojekyll",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   {
     "file": "app.js",
-    "sha256": "21a8442e5c4c3a6cc3ac94f78d5943d789139b476b09a6f06160e3276c69814f"
-  },
-  {
-    "file": "styles.css",
-    "sha256": "f11511a33049a6b09eff77bb17aba788a0d56e9eb3c653539f91c4cdcc1d1b6b"
+    "sha256": "74a6215d672652effe29d9146c154997fe2731f046974b73b9dda2bb410cdcc5"
   },
   {
     "file": "config.js",
     "sha256": "57dd5b47dd7a4c688672b8e31e17bb53190eb3f77e91d337930926e10fdc1697"
   },
   {
-    "file": "terms.html",
-    "sha256": "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
+    "file": "data-deletion.html",
+    "sha256": "13c69927f2603296c4ca8278b407c332119fc87a70065af5a02133178082202f"
+  },
+  {
+    "file": "index.html",
+    "sha256": "c2d75f5350b3f73026e0ba8ee36cd6529dfc62de3c2027a1341c558018431fc5"
+  },
+  {
+    "file": "legal.css",
+    "sha256": "83710fc31805fa77cd687a95107b10cb35f79e97313e69c91c057377eb20b524"
+  },
+  {
+    "file": "limitations.html",
+    "sha256": "8d4ea1df7f4a6382a59daa9c3106b2f8a97622da2bf4e36bdfdeb082145e4096"
+  },
+  {
+    "file": "lp/index.html",
+    "sha256": "aba4ef479985e968879043b7fa5673141bbbe60e3271b5d0e18f68f7b28abaa5"
+  },
+  {
+    "file": "lp/styles.css",
+    "sha256": "04678a126df77faa958085f1bbc0242bd7b3ab24b746198c863b03025adb73e4"
   },
   {
     "file": "privacy.html",
     "sha256": "9de39bbb3e8f20602f66a39cf5da21b8e5ec033bda067bb5d262b8135708b10a"
   },
   {
-    "file": "legal.css",
-    "sha256": "5e8f4ac60177595479f374f23d93a467e0c97e0e89b3c2afe6ac602fd6a39bf7"
+    "file": "README.md",
+    "sha256": "52dbbae6a03b845c1607e4fcdebe788ce5ffd711ae99ea75aab3ee28de0adadf"
+  },
+  {
+    "file": "styles.css",
+    "sha256": "acd3c3169611d19b4b52aebd151be21f3755fdf541b253b11fc4a16023f2ed9e"
+  },
+  {
+    "file": "support.html",
+    "sha256": "13869497d9c1eaf138645bc6a8db1a0a051899502b7cd7182506fa75870d00e3"
+  },
+  {
+    "file": "terms.html",
+    "sha256": "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
   }
 ]

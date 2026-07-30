@@ -8,6 +8,12 @@ Supabase service role keyを入れないでください。
 
 ## 公開
 
-GitHub Actionsで静的ポータルをGitHub Pagesへ配信します。
-公開されるconfig.jsにはSupabaseのpublishable keyだけを置きます。
+1. このフォルダの内容だけをGitHubリポジトリの`main`ブランチへ登録します。
+2. Repository Settings > Pages > Sourceで`GitHub Actions`を選択します。
+3. Actionsの`Deploy AI Safe Gateway Portal`完了後に表示されるHTTPS URLを確認します。
+4. Supabase AuthenticationのSite URLとRedirect URLsへ、そのURLを登録します。
+5. Supabase Edge Functionsの`ALLOWED_ORIGINS`へ、GitHub Pagesのオリジン
+   （例: `https://account.github.io`）を追加します。
+
+公開される`config.js`にはSupabaseのpublishable keyだけを置きます。
 secret keyやservice role keyは置かないでください。

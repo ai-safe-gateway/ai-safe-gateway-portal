@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI Safe Gatewayは、原文・辞書・対応表をPC内に保ったまま、生成AIで使いやすい形へ匿名化するWindows向けローカルゲートウェイです。">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; base-uri 'self'; form-action 'self'; object-src 'none'">
+  <title>AI Safe Gateway | 生成AIを使う前に、機密情報をPC内で守る</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="AI Safe Gateway トップ">
+      <span class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 40 10v12c0 11-6 18-16 23C14 40 8 33 8 22V10L24 4Z"/><rect x="18" y="22" width="12" height="10" rx="2"/><path d="M20 22v-4a4 4 0 0 1 8 0v4"/></svg></span>
+      <span><b>AI Safe Gateway</b><small>LOCAL AI PRIVACY GATEWAY</small></span>
+    </a>
+    <nav aria-label="ページ内メニュー"><a href="#solution">仕組み</a><a href="#features">できること</a><a href="#poc">PoC</a></nav>
+    <a class="header-cta" href="../index.html">企業ログイン</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">LOCAL-FIRST AI SECURITY</p>
+        <h1>生成AIを使う前に、<br><span>機密情報をPC内で守る。</span></h1>
+        <p class="lead">AI Safe Gatewayは、議事録・契約書・提案資料をローカルで意味保持匿名化し、AIが理解しやすい文章へ整えるWindows向け前処理基盤です。</p>
+        <div class="hero-actions"><a class="primary" href="../index.html?mode=register">30日間のPoCを始める</a><a class="secondary" href="#solution">仕組みを見る</a></div>
+        <ul class="trust-list"><li>原文を自動送信しない</li><li>辞書・対応表はPC内</li><li>AIを限定しない</li></ul>
+      </div>
+      <div class="hero-visual" aria-label="ローカル匿名化の流れ">
+        <div class="orbit"></div>
+        <div class="shield"><svg viewBox="0 0 80 88" aria-hidden="true"><path d="M40 4 71 16v23c0 22-12 37-31 46C21 76 9 61 9 39V16L40 4Z"/><rect x="29" y="40" width="22" height="18" rx="4"/><path d="M33 40v-7a7 7 0 0 1 14 0v7"/></svg><b>LOCAL</b></div>
+        <article class="flow-card input"><small>01 INPUT</small><b>社内文書</b><span>原文をPC内で確認</span></article>
+        <article class="flow-card protect"><small>02 PROTECT</small><b>意味保持匿名化</b><span>実名だけを役割へ変換</span></article>
+        <article class="flow-card use"><small>03 USE</small><b>任意の生成AIへ</b><span>人が確認して利用</span></article>
+      </div>
+    </section>
+
+    <section class="proof-strip" aria-label="製品の重要方針">
+      <article><strong>PC内</strong><span>原文・辞書・対応表を外へ出さない</span></article>
+      <article><strong>人が確認</strong><span>外部AIへ自動送信なし</span></article>
+      <article><strong>可逆</strong><span>AI回答をローカル復元</span></article>
+      <article><strong>任意</strong><span>匿名利用統計は初期OFF</span></article>
+    </section>
+
+    <section id="solution" class="section">
+      <div class="section-head"><p class="eyebrow dark">HOW IT WORKS</p><h2>固有情報を隠し、業務の意味は残す</h2><p>単純な番号置換ではなく、担当・役割・業種などの意味を残すことで、匿名化後も読みやすい文章を目指します。</p></div>
+      <div class="before-after">
+        <article><header><span>原文</span><small>このPC内だけ</small></header><p><mark>株式会社山田商事</mark>の<mark>田中太郎</mark>営業部長が、契約更新案を説明しました。</p></article>
+        <div class="process-arrow"><span>PC内で匿名化</span><b>→</b></div>
+        <article class="safe"><header><span>安全化後</span><small>AIへ渡す形</small></header><p><mark>取引先企業A</mark>の<mark>営業部長A</mark>が、契約更新案を説明しました。</p></article>
+      </div>
+      <p class="boundary-note">AI Safe Gateway自身は外部AIへの送信機能を持ちません。利用者が結果を確認し、利用先を選択します。</p>
+    </section>
+
+    <section id="features" class="section alt">
+      <div class="section-head"><p class="eyebrow dark">PRODUCT MAP</p><h2>安全化から運用確認まで、ひとつの流れに</h2></div>
+      <div class="feature-grid">
+        <article><span class="feature-no">01</span><div class="icon">◇</div><h3>意味保持匿名化</h3><p>人名・企業名・連絡先などを検出し、読みやすい役割表現へ置換します。</p></article>
+        <article><span class="feature-no">02</span><div class="icon">↺</div><h3>ローカル復元</h3><p>暗号化した対応表を使い、AI回答内の識別子を元の文脈へ戻せます。</p></article>
+        <article><span class="feature-no">03</span><div class="icon">◎</div><h3>回答品質比較</h3><p>原文版と匿名化版の回答をローカルで比較し、欠落や差分を確認します。</p></article>
+        <article><span class="feature-no">04</span><div class="icon">▦</div><h3>企業ルール</h3><p>会社辞書・禁止ルール・利用規程・監査ログを一元管理します。</p></article>
+        <article><span class="feature-no">05</span><div class="icon">✓</div><h3>人による最終確認</h3><p>確度とリスクに応じて、確認が必要な箇所を画面上で案内します。</p></article>
+        <article><span class="feature-no">06</span><div class="icon">↗</div><h3>活用効果の可視化</h3><p>本文を収集せず、利用件数や削減時間の目安を企業単位で確認します。</p></article>
+      </div>
+    </section>
+
+    <section class="section usecases">
+      <div class="section-head"><p class="eyebrow dark">USE CASES</p><h2>「何に使うか」から始められます</h2></div>
+      <div class="usecase-grid">
+        <article><small>MEETING</small><h3>会議・商談</h3><p>要点、決定事項、担当、期限を整理</p><span>議事録 → 安全化 → 要約</span></article>
+        <article><small>CONTRACT</small><h3>契約書・規程</h3><p>義務、期限、確認すべき条件を整理</p><span>契約書 → 安全化 → 確認</span></article>
+        <article><small>WRITING</small><h3>提案・メール</h3><p>メモから構成案や文案を作成</p><span>メモ → 安全化 → 文案</span></article>
+        <article><small>ANALYSIS</small><h3>報告書・資料</h3><p>差分、原因候補、優先順位を整理</p><span>資料 → 安全化 → 比較</span></article>
+      </div>
+    </section>
+
+    <section id="poc" class="poc-section">
+      <div><p class="eyebrow">START A PILOT</p><h2>まずは実際の文書で、<br>安全性と回答品質を確認。</h2><p>30日間のPoCでは、Windowsアプリ、企業管理ポータル、ライセンス、匿名利用統計を試せます。自動検出は完全ではないため、重要文書では人の最終確認が必要です。</p></div>
+      <div class="poc-panel"><ol><li><span>1</span>企業アカウントを登録</li><li><span>2</span>ライセンスをWindowsへ読み込み</li><li><span>3</span>サンプル文書で匿名化と復元を確認</li><li><span>4</span>管理画面で利用状況を確認</li></ol><a class="primary light" href="../index.html?mode=register">企業登録へ進む</a></div>
+    </section>
+  </main>
+
+  <footer>
+    <div><b>AI Safe Gateway</b><p>企業が安心して生成AIを利用するためのローカルゲートウェイ</p></div>
+    <nav><a href="../terms.html">利用規約</a><a href="../privacy.html">プライバシー方針</a><a href="../limitations.html">既知の制限</a><a href="../support.html">サポート</a><a href="../data-deletion.html">解約・削除</a></nav>
+    <small>PoC試験提供中。正式導入前に自社の情報管理規程をご確認ください。</small>
+  </footer>
+</body>
+</html>
