@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AI Safe Gatewayは、議事録・契約書などをPC内で意味保持匿名化し、任意の生成AIで安全に活用するためのWindows向けローカル前処理基盤です。">
+  <meta name="description" content="AI Safe Gatewayは、議事録・契約書などをPC内で意味保持匿名化し、生成AIを会社ルールで安全に活用するためのWindows向けローカル前処理基盤です。">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'none'; base-uri 'self'; form-action 'self'; object-src 'none'">
-  <title>AI Safe Gateway | AIを止めない。機密情報だけを、AIに渡さない。</title>
-  <link rel="stylesheet" href="styles.css?v=0.5.0">
+  <title>AI Safe Gateway | AIを止めず、機密情報だけを止める</title>
+  <link rel="stylesheet" href="conversion.css?v=0.6.0">
 </head>
 <body>
   <header class="site-header">
@@ -22,251 +22,345 @@
       <span><b>AI Safe Gateway</b><small>LOCAL AI PRIVACY GATEWAY</small></span>
     </a>
     <nav aria-label="ページ内メニュー">
-      <a href="#why">選ばれる理由</a>
-      <a href="#flow">仕組み</a>
-      <a href="#usecases">活用例</a>
+      <a href="#risk">導入しないリスク</a>
+      <a href="#solution">解決の仕組み</a>
+      <a href="#platform">サービス全体像</a>
       <a href="#poc">PoC</a>
     </nav>
     <a class="login-link" href="../index.html">企業ログイン</a>
-    <a class="header-cta" href="../index.html?mode=register">PoCを始める</a>
+    <a class="header-cta" href="../index.html?mode=register">30日PoCを始める</a>
   </header>
 
   <main id="top">
     <section class="hero">
-      <div class="hero-image" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <p class="eyebrow"><span></span> LOCAL-FIRST AI SECURITY</p>
-        <p class="hero-badge">原文・辞書・対応表はPCの外へ出さない</p>
-        <h1>AIを止めない。<br><em>機密情報だけを、<br>AIに渡さない。</em></h1>
-        <p class="hero-lead">議事録・契約書・提案資料を、PC内で「意味を残したまま」匿名化。ChatGPT・Claude・Geminiなど、会社が選んだ生成AIを安全に活用できます。</p>
-        <div class="hero-actions">
-          <a class="button primary" href="../index.html?mode=register"><span>30日間のPoCを始める</span><b>→</b></a>
-          <a class="button secondary" href="#flow">3分で仕組みを見る</a>
+      <div class="hero-visual" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="kicker"><span></span> GENERATIVE AI SECURITY FOR BUSINESS</p>
+          <div class="alert-chip"><i></i> 社内のAI利用、本当に把握できていますか？</div>
+          <h1>その議事録、<br><em>顧客名が残ったまま</em><br>AIへ入っていませんか。</h1>
+          <p class="hero-lead">禁止するだけでは、見えないAI利用は止まりません。AI Safe Gatewayは、文書をAIへ渡す前にPC内で機密情報を守り、業務に必要な意味を残します。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="../index.html?mode=register"><span>自社文書で30日間試す</span><b>→</b></a>
+            <a class="button ghost" href="#solution">守り方を3分で確認</a>
+          </div>
+          <p class="hero-note">外部AIへの自動送信は行いません。匿名化結果を人が確認し、会社が許可したAIで利用します。</p>
         </div>
-        <p class="hero-note">AI Safe Gatewayから外部AIへの自動送信は行いません。匿名化結果を人が確認して利用します。</p>
+        <aside class="hero-proof">
+          <small>AI UTILIZATION CONTROL</small>
+          <h2>AIを止めず、<br>機密情報だけを止める。</h2>
+          <div class="proof-flow">
+            <span><b>01</b>社内文書</span><i>→</i>
+            <span class="active"><b>02</b>PC内で安全化</span><i>→</i>
+            <span><b>03</b>任意のAIへ</span>
+          </div>
+          <div class="proof-list">
+            <p><i></i><span>原文・企業辞書・対応表</span><strong>送信しない</strong></p>
+            <p><i></i><span>AIへ渡す文書</span><strong>人が最終確認</strong></p>
+            <p><i></i><span>利用する生成AI</span><strong>限定しない</strong></p>
+          </div>
+        </aside>
       </div>
-      <div class="hero-status" aria-label="製品の特徴">
-        <article><span class="status-icon">PC</span><div><small>DOCUMENT</small><strong>文書処理はローカル</strong></div></article>
-        <i></i>
-        <article><span class="status-icon">AI</span><div><small>AI CHOICE</small><strong>利用するAIを限定しない</strong></div></article>
-        <i></i>
-        <article><span class="status-icon">↺</span><div><small>REVERSIBLE</small><strong>回答をPC内で復元</strong></div></article>
+      <div class="trust-strip">
+        <p><small>LOCAL PROCESSING</small><strong>文書処理はPC内</strong></p>
+        <p><small>MEANING PRESERVED</small><strong>意味を残して匿名化</strong></p>
+        <p><small>HUMAN IN THE LOOP</small><strong>外部利用前に人が確認</strong></p>
+        <p><small>REVERSIBLE</small><strong>回答をPC内で復元</strong></p>
       </div>
     </section>
 
-    <section class="trust-rail" aria-label="セキュリティ境界">
-      <p>守る対象</p>
-      <article><strong>原文</strong><span>外部送信なし</span></article>
-      <article><strong>企業辞書</strong><span>PC内で暗号化</span></article>
-      <article><strong>対応表</strong><span>PC内で暗号化</span></article>
-      <article><strong>外部AI</strong><span>自動接続なし</span></article>
-    </section>
-
-    <section id="why" class="section problem-section">
-      <div class="section-heading split-heading">
+    <section id="risk" class="section diagnosis-section">
+      <div class="section-head split">
         <div>
-          <p class="eyebrow dark"><span></span> THE PROBLEM</p>
-          <h2>「AI禁止」か「漏えいリスク」か。<br><em>その二択を終わらせる。</em></h2>
+          <p class="kicker dark"><span></span> THE INVISIBLE RISK</p>
+          <h2>社内ルールを作っただけで、<br><em>本当に守れていますか？</em></h2>
         </div>
-        <p>企業が生成AIを使えない理由は、AIの性能不足ではありません。顧客名・担当者名・契約情報を、そのまま入力できないことです。</p>
+        <p>事故は「悪意のある持ち出し」だけで起きるとは限りません。便利だから、急いでいるから、少しだけなら——その判断が端末ごとに繰り返されます。</p>
       </div>
-      <div class="problem-grid">
-        <article class="problem-card danger">
-          <span class="problem-no">01</span>
-          <div class="line-icon">↑</div>
-          <h3>そのままAIへ入力</h3>
-          <p>顧客情報や営業秘密まで、社外サービスへ送る可能性が残ります。</p>
-          <strong>情報漏えいが不安</strong>
-        </article>
-        <article class="problem-card warning">
-          <span class="problem-no">02</span>
-          <div class="line-icon">###</div>
-          <h3>単純な伏字・番号置換</h3>
-          <p>人物の役割や企業の業種が消え、要約・分析の品質が落ちます。</p>
-          <strong>AIが文脈を失う</strong>
-        </article>
-        <article class="problem-card muted">
-          <span class="problem-no">03</span>
-          <div class="line-icon">Ⅱ</div>
-          <h3>生成AIを一律禁止</h3>
-          <p>安全性は保てても、現場の生産性向上とAI活用が止まります。</p>
-          <strong>業務改善が進まない</strong>
-        </article>
-      </div>
-      <div class="answer-banner">
-        <div class="answer-shield">✓</div>
-        <div><small>THE THIRD OPTION</small><h3>AIへ送る前に、PC内で守る。</h3><p>AI Safe Gatewayは、生成AIと社内文書の間に置く「ローカル前処理基盤」です。</p></div>
-        <span>安全性</span><b>×</b><span>回答品質</span><b>×</b><span>運用性</span>
+
+      <div class="diagnosis-board">
+        <div class="diagnosis-title">
+          <span class="radar-icon">!</span>
+          <div><small>30秒チェック</small><h3>ひとつでも曖昧なら、AI利用の入口が管理できていません。</h3></div>
+          <b>RISK CHECK</b>
+        </div>
+        <div class="check-grid">
+          <p><i>01</i><span>誰が、どの生成AIへ、何を入力しているか把握できない</span><b>見えない</b></p>
+          <p><i>02</i><span>顧客名や案件名を、利用者が手作業で消している</span><b>ばらつく</b></p>
+          <p><i>03</i><span>部署や担当者によって、AIへ渡せる情報の判断が違う</span><b>揃わない</b></p>
+          <p><i>04</i><span>AIを禁止したが、私用アカウントの利用までは確認できない</span><b>止められない</b></p>
+          <p><i>05</i><span>経営層へ、利用状況や削減時間を説明する根拠がない</span><b>示せない</b></p>
+          <p><i>06</i><span>漏えい対策と回答品質を、同じ基準で評価できない</span><b>判断できない</b></p>
+        </div>
       </div>
     </section>
 
-    <section id="flow" class="section flow-section">
-      <div class="section-heading centered">
-        <p class="eyebrow dark"><span></span> MEANING-PRESERVING ANONYMIZATION</p>
-        <h2>ただ隠すのではなく、<em>AIが理解できる形へ。</em></h2>
-        <p>数字だけの匿名IDではなく、業種・役割・関係性を残します。人が読んでも、AIが読んでも、文脈を追える匿名化です。</p>
+    <section class="section loss-section">
+      <div class="loss-intro">
+        <p class="kicker"><span></span> COST OF DOING NOTHING</p>
+        <h2>対策を後回しにすると、<br>失うのは情報だけではありません。</h2>
       </div>
-
-      <div class="mask-compare">
-        <article class="compare-card ordinary">
-          <header><span>一般的なマスキング</span><small>意味が消える</small></header>
-          <div class="sentence">
-            <p>株式会社山田商事の田中部長が説明</p>
-            <b>↓</b>
-            <p><mark>COMPANY001</mark>の<mark>PERSON001</mark>が説明</p>
-          </div>
-          <footer><span>×</span> AIが業種・役割を判断しにくい</footer>
-        </article>
-        <div class="versus">VS</div>
-        <article class="compare-card gateway">
-          <header><span>AI Safe Gateway</span><small>意味を残す</small></header>
-          <div class="sentence">
-            <p>株式会社山田商事の田中営業部長が説明</p>
-            <b>↓</b>
-            <p><mark>取引先企業A</mark>の<mark>営業部長A</mark>が説明</p>
-          </div>
-          <footer><span>✓</span> AIが関係性を保ったまま要約・分析</footer>
-        </article>
-      </div>
-
-      <div class="workflow">
+      <div class="loss-grid">
         <article>
-          <span class="workflow-no">01</span>
-          <div class="workflow-icon">▤</div>
-          <small>INPUT</small>
-          <h3>原文を読み込む</h3>
-          <p>TXT・DOCX・文字PDF</p>
-          <b class="location local">このPC内</b>
+          <span class="loss-no">01</span>
+          <div class="loss-symbol shield">!</div>
+          <small>SECURITY</small>
+          <h3>顧客からの信頼</h3>
+          <p>一度のコピー＆ペーストでも、顧客情報や契約情報を外部サービスへ送る可能性があります。</p>
+          <b>「守れているつもり」が残る</b>
         </article>
-        <div class="workflow-arrow">→</div>
-        <article class="active">
-          <span class="workflow-no">02</span>
-          <div class="workflow-icon shield-mini">◇</div>
-          <small>PROTECT</small>
-          <h3>意味保持匿名化</h3>
-          <p>候補を検出し、人が最終確認</p>
-          <b class="location local">このPC内</b>
-        </article>
-        <div class="workflow-arrow">→</div>
         <article>
-          <span class="workflow-no">03</span>
-          <div class="workflow-icon">AI</div>
-          <small>USE</small>
-          <h3>任意のAIで活用</h3>
-          <p>利用者が安全化文書を渡す</p>
-          <b class="location manual">手動で利用</b>
+          <span class="loss-no">02</span>
+          <div class="loss-symbol hour">⌛</div>
+          <small>PRODUCTIVITY</small>
+          <h3>現場の時間と速度</h3>
+          <p>手作業の伏字、上司への確認、一律禁止。安全策そのものがAI活用を遅らせます。</p>
+          <b>「使えているつもり」になる</b>
         </article>
-        <div class="workflow-arrow">→</div>
         <article>
-          <span class="workflow-no">04</span>
-          <div class="workflow-icon">↺</div>
-          <small>RESTORE</small>
-          <h3>回答を復元</h3>
-          <p>元の文脈へローカル復元</p>
-          <b class="location local">このPC内</b>
+          <span class="loss-no">03</span>
+          <div class="loss-symbol graph">↗</div>
+          <small>GOVERNANCE</small>
+          <h3>投資判断の根拠</h3>
+          <p>統一ルール・監査ログ・利用統計がなければ、効果も改善点も経営へ説明できません。</p>
+          <b>「管理できているつもり」が続く</b>
         </article>
       </div>
-      <div class="privacy-boundary"><span>🔒</span><strong>本文・辞書・対応表はPC内に保持</strong><p>クラウドへ送るのは、ライセンス情報と管理者が許可した匿名利用件数だけです。</p></div>
+      <div class="loss-conclusion">
+        <span>!</span>
+        <p><small>最も避けたい状態</small><strong>禁止して現場を止めるか、許可してリスクを抱えるか。</strong></p>
+        <b>この二択を終わらせる必要があります。</b>
+      </div>
     </section>
 
-    <section class="section value-section">
-      <div class="value-intro">
-        <p class="eyebrow"><span></span> WHY AI SAFE GATEWAY</p>
-        <h2>安全にするだけでは、<br>AI活用は進まない。</h2>
-        <p>現場が迷わず使え、管理者が統制でき、経営層が効果を確認できるところまでを一つにつなぎます。</p>
+    <section id="solution" class="section solution-section">
+      <div class="section-head centered">
+        <p class="kicker"><span></span> THE LOCAL SECURITY GATEWAY</p>
+        <h2>AI利用の入口に、<em>ひとつの安全基準を。</em></h2>
+        <p>原文を動かさず、AIへ渡す情報だけを変える。利用者の手軽さと、企業の統制を同時に支える前処理基盤です。</p>
       </div>
-      <div class="value-grid">
+
+      <div class="gateway-map">
+        <div class="gateway-source">
+          <small>BEFORE</small>
+          <span class="map-icon">▤</span>
+          <h3>社内文書</h3>
+          <p>議事録・契約書・提案資料</p>
+          <ul><li>顧客名</li><li>担当者名</li><li>連絡先</li><li>案件情報</li></ul>
+        </div>
+        <div class="map-arrow"><i></i><b>→</b></div>
+        <div class="gateway-core">
+          <span class="core-ring"><b>ASG</b></span>
+          <small>AI SAFE GATEWAY</small>
+          <h3>PC内で意味保持匿名化</h3>
+          <p>検出 → 役割付与 → 人が確認</p>
+          <b class="local-only">原文はPC内から動かさない</b>
+        </div>
+        <div class="map-arrow"><i></i><b>→</b></div>
+        <div class="gateway-output">
+          <small>AFTER</small>
+          <span class="map-icon">AI</span>
+          <h3>安全化した文書</h3>
+          <p>会社が許可した任意の生成AIへ</p>
+          <ul><li>取引先企業A</li><li>営業部長A</li><li>電話A</li><li>案件A</li></ul>
+        </div>
+      </div>
+
+      <div class="meaning-panel">
+        <div class="meaning-copy">
+          <small>MEANING PRESERVATION</small>
+          <h3>隠すだけでは、AIの回答品質が落ちる。</h3>
+          <p>AI Safe Gatewayは番号に置き換えるだけでなく、業種・役割・関係性を残します。同じ匿名IDは同じ対象として扱い、人にもAIにも読みやすい文脈を維持します。</p>
+        </div>
+        <div class="meaning-example">
+          <div><small>単純なマスキング</small><p><del>株式会社山田商事</del> → <mark>COMPANY001</mark></p><p><del>田中営業部長</del> → <mark>PERSON001</mark></p><b class="bad">文脈が消える</b></div>
+          <i>→</i>
+          <div class="preferred"><small>AI Safe Gateway</small><p><del>株式会社山田商事</del> → <mark>取引先企業A</mark></p><p><del>田中営業部長</del> → <mark>営業部長A</mark></p><b class="good">意味が残る</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section outcome-section">
+      <div class="section-head split">
+        <div><p class="kicker dark"><span></span> EXPECTED OUTCOMES</p><h2>導入後に変わるのは、<br><em>マスキング作業だけではない。</em></h2></div>
+        <p>利用者・管理者・経営層が、それぞれ必要な判断を同じ基盤で行えるようになります。</p>
+      </div>
+      <div class="outcome-grid">
         <article>
-          <span class="value-index">01 / SECURITY</span>
-          <div class="value-symbol">⌂</div>
-          <h3>原文を社外へ出さない</h3>
-          <p>検出・匿名化・辞書・対応表・復元をWindows PC内で完結します。</p>
-          <ul><li>外部AIへ自動送信なし</li><li>復元情報を暗号化</li><li>禁止ルールで出力を制御</li></ul>
+          <header><span>01</span><div><small>USER</small><h3>利用者</h3></div></header>
+          <div class="before"><small>導入前</small><p>何を消すべきか迷い、手作業で伏字にする</p></div>
+          <div class="change">↓</div>
+          <div class="after"><small>導入後</small><p><strong>業務を選び、文書を安全化して、すぐAIへ活用</strong></p></div>
         </article>
         <article>
-          <span class="value-index">02 / QUALITY</span>
-          <div class="value-symbol">◎</div>
-          <h3>回答品質を落としにくい</h3>
-          <p>役割・業種・案件など、業務に必要な意味を残して匿名化します。</p>
-          <ul><li>意味保持匿名化</li><li>原文版との回答品質比較</li><li>用途別のAI向け指示文</li></ul>
+          <header><span>02</span><div><small>ADMINISTRATOR</small><h3>管理者</h3></div></header>
+          <div class="before"><small>導入前</small><p>部署・担当者ごとの判断に任せ、状況が見えない</p></div>
+          <div class="change">↓</div>
+          <div class="after"><small>導入後</small><p><strong>会社辞書・禁止ルール・監査ログで基準を統一</strong></p></div>
         </article>
         <article>
-          <span class="value-index">03 / GOVERNANCE</span>
-          <div class="value-symbol">▥</div>
-          <h3>会社ルールで統一できる</h3>
-          <p>企業辞書・禁止ルール・利用規程・監査ログを一元管理します。</p>
-          <ul><li>会社ポリシーを配布</li><li>匿名集計は初期OFF</li><li>利用件数と削減時間を可視化</li></ul>
+          <header><span>03</span><div><small>MANAGEMENT</small><h3>経営層</h3></div></header>
+          <div class="before"><small>導入前</small><p>AIが役立っているか、数字で説明できない</p></div>
+          <div class="change">↓</div>
+          <div class="after"><small>導入後</small><p><strong>利用件数・活用業務・削減時間を可視化</strong></p></div>
         </article>
+      </div>
+    </section>
+
+    <section id="platform" class="section platform-section">
+      <div class="section-head centered">
+        <p class="kicker"><span></span> COMPLETE SERVICE OVERVIEW</p>
+        <h2>単なるマスキングツールではない。<br><em>AI活用の前処理・運用・管理をひとつに。</em></h2>
+        <p>現場で文書を守るところから、会社ルールの統一、利用状況と削減時間の可視化までを一つのサービスで支えます。</p>
+      </div>
+
+      <div class="platform-map">
+        <div class="platform-center">
+          <span class="platform-logo">ASG</span>
+          <small>AI SECURITY PLATFORM</small>
+          <strong>AI Safe Gateway</strong>
+          <p>完全ローカル文書処理</p>
+        </div>
+        <article class="module protect">
+          <header><span>01</span><div><small>PROTECT</small><h3>文書を安全化</h3></div></header>
+          <ul>
+            <li>TXT・DOCX・文字PDF</li>
+            <li>意味保持匿名化</li>
+            <li>禁止ワードチェック</li>
+            <li>人による最終確認</li>
+            <li>回答のローカル復元</li>
+            <li>マスク前後の品質比較</li>
+          </ul>
+        </article>
+        <article class="module govern">
+          <header><span>02</span><div><small>GOVERN</small><h3>会社ルールを統一</h3></div></header>
+          <ul>
+            <li>企業辞書・別名管理</li>
+            <li>禁止ルール・確認パッケージ</li>
+            <li>会社ポリシー配布</li>
+            <li>AI利用規程の生成</li>
+            <li>用途別のAI向け指示文</li>
+            <li>監査ログ</li>
+          </ul>
+        </article>
+        <article class="module manage">
+          <header><span>03</span><div><small>MANAGE</small><h3>利用と効果を可視化</h3></div></header>
+          <ul>
+            <li>企業管理ポータル</li>
+            <li>企業ID・ライセンス管理</li>
+            <li>端末登録・利用状況</li>
+            <li>活用業務の傾向</li>
+            <li>削減時間ダッシュボード</li>
+            <li>次に使える業務を提案</li>
+          </ul>
+        </article>
+        <article class="module operate">
+          <header><span>04</span><div><small>OPERATE</small><h3>継続運用を支える</h3></div></header>
+          <ul>
+            <li>ライセンス認証</li>
+            <li>オフライン猶予</li>
+            <li>ルール・辞書更新配信</li>
+            <li>バックアップと復旧</li>
+            <li>診断レポート</li>
+            <li>PoC・導入支援</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="data-boundary">
+        <div class="boundary-local">
+          <header><span>⌂</span><div><small>LOCAL / このPC内</small><h3>機密データを扱う領域</h3></div></header>
+          <p><b>原文</b><b>企業辞書</b><b>マスク対応表</b><b>AI回答</b></p>
+          <strong>原文・辞書・対応表はPCの外へ出さない</strong>
+        </div>
+        <div class="boundary-divider"><span>通信を分離</span></div>
+        <div class="boundary-cloud">
+          <header><span>☁</span><div><small>CLOUD / 企業管理</small><h3>運用に必要な情報だけ</h3></div></header>
+          <p><b>ライセンス</b><b>端末ハッシュ</b><b>許可した匿名集計</b></p>
+          <strong>原文・ファイル名・検出語は含めない</strong>
+        </div>
       </div>
     </section>
 
     <section id="usecases" class="section usecase-section">
-      <div class="section-heading split-heading">
-        <div><p class="eyebrow dark"><span></span> USE CASES</p><h2>いつもの業務から、<br><em>安全なAI活用を始める。</em></h2></div>
-        <p>AI機能を探す必要はありません。「何をしたいか」を選び、対象ファイルを開くだけです。</p>
+      <div class="section-head split">
+        <div><p class="kicker dark"><span></span> BUSINESS USE CASES</p><h2>「AIで何ができる？」ではなく、<br><em>いつもの業務から選ぶ。</em></h2></div>
+        <p>カードから目的を選ぶと、保護範囲・意味保持・AI向け指示文を用途に合わせて設定。利用者がAI機能を探す必要はありません。</p>
       </div>
       <div class="usecase-grid">
         <article>
           <div class="usecase-image"><img src="assets/usecase-meeting.webp" alt="議事録を安全化して要点を整理するイメージ" loading="lazy"><span>01</span></div>
-          <div class="usecase-copy"><small>MEETING / SALES</small><h3>会議・商談を整理したい</h3><p>長い議事録から、要点・決定事項・担当・期限を整理。</p><ul><li>議事録要約</li><li>ToDo抽出</li><li>論点整理</li></ul></div>
+          <div class="usecase-copy"><small>MEETING / SALES</small><h3>会議・商談を整理したい</h3><p class="pain">長い議事録を読み返し、担当や期限を探している</p><p class="result">要点・決定事項・担当・期限をすぐ整理</p><ul><li>議事録要約</li><li>ToDo抽出</li><li>論点整理</li></ul></div>
         </article>
         <article>
           <div class="usecase-image"><img src="assets/usecase-contract.webp" alt="契約書を安全化して条件を確認するイメージ" loading="lazy"><span>02</span></div>
-          <div class="usecase-copy"><small>CONTRACT / POLICY</small><h3>契約書・規程を確認したい</h3><p>義務、期限、リスク候補、確認すべき条件を整理。</p><ul><li>条件確認</li><li>差分整理</li><li>リスク候補</li></ul></div>
+          <div class="usecase-copy"><small>CONTRACT / POLICY</small><h3>契約書・規程を確認したい</h3><p class="pain">義務・期限・確認条件の見落としが不安</p><p class="result">条件・差分・リスク候補を一覧で確認</p><ul><li>条件確認</li><li>差分整理</li><li>リスク候補</li></ul></div>
         </article>
         <article>
           <div class="usecase-image"><img src="assets/usecase-writing.webp" alt="資料を安全化して提案文を作るイメージ" loading="lazy"><span>03</span></div>
-          <div class="usecase-copy"><small>PROPOSAL / WRITING</small><h3>提案・メールの文案を作りたい</h3><p>顧客情報を守りながら、構成案や伝わる文章へ。</p><ul><li>構成案</li><li>文案作成</li><li>不足情報</li></ul></div>
+          <div class="usecase-copy"><small>PROPOSAL / WRITING</small><h3>提案・メールの文案を作りたい</h3><p class="pain">顧客情報があるため、AIへ相談できない</p><p class="result">情報を守りながら、構成案と文案を作成</p><ul><li>構成案</li><li>文案作成</li><li>不足情報</li></ul></div>
         </article>
         <article>
           <div class="usecase-image"><img src="assets/usecase-analysis.webp" alt="複数資料を安全化して比較するイメージ" loading="lazy"><span>04</span></div>
-          <div class="usecase-copy"><small>REPORT / ANALYSIS</small><h3>報告書や資料を比較したい</h3><p>複数資料から、差分・原因候補・優先順位を整理。</p><ul><li>差分</li><li>原因候補</li><li>優先順位</li></ul></div>
+          <div class="usecase-copy"><small>REPORT / ANALYSIS</small><h3>報告書や資料を比較したい</h3><p class="pain">複数資料を目視し、差分を探している</p><p class="result">差分・原因候補・優先順位を整理</p><ul><li>差分</li><li>原因候補</li><li>優先順位</li></ul></div>
         </article>
       </div>
     </section>
 
-    <section class="architecture-section">
-      <div class="architecture-inner">
-        <div class="architecture-copy">
-          <p class="eyebrow"><span></span> SECURITY BOUNDARY</p>
-          <h2>文書データと管理データを、<br>明確に分離。</h2>
-          <p>ライセンス認証や利用状況の可視化があっても、本文・辞書・対応表は送信しない設計です。</p>
-        </div>
-        <div class="architecture">
-          <div class="zone local-zone">
-            <header><span>🔒</span><strong>社内・PC内</strong><small>文書処理の領域</small></header>
-            <div class="zone-items"><span>原文</span><i>→</i><span>検出・匿名化</span><i>→</i><span>人が確認</span><i>→</i><span>ローカル復元</span></div>
-            <footer>本文・企業辞書・対応表・AI回答は外部送信しない</footer>
-          </div>
-          <div class="boundary-line"><span>通信を分離</span></div>
-          <div class="zone cloud-zone">
-            <header><span>☁</span><strong>管理クラウド</strong><small>企業管理の領域</small></header>
-            <div class="zone-items"><span>ライセンス</span><span>端末ハッシュ</span><span>匿名利用件数</span></div>
-            <footer>原文・ファイル名・検出語・辞書・対応表は含めない</footer>
-          </div>
-        </div>
+    <section class="section difference-section">
+      <div class="difference-copy">
+        <p class="kicker"><span></span> WHY AI SAFE GATEWAY</p>
+        <h2>AIに接続しないことが、<br><em>最大の差別化。</em></h2>
+        <p>AI Safe GatewayはAIサービスの代わりではありません。企業データを守りながら、今使っているAIも、将来選ぶAIも安全に活用するための前段です。</p>
+      </div>
+      <div class="difference-list">
+        <article><span>01</span><div><small>AI AGNOSTIC</small><h3>利用するAIを限定しない</h3><p>ChatGPT・Claude・Gemini・Copilotなど、会社が許可したAIを選べます。</p></div></article>
+        <article><span>02</span><div><small>NO DIRECT CONNECTION</small><h3>外部AIへ直接送信しない</h3><p>送信操作は利用者が行い、匿名化結果を確認する工程を省略しません。</p></div></article>
+        <article><span>03</span><div><small>EXPLAINABLE</small><h3>なぜマスクしたか説明できる</h3><p>ルール・辞書・検出理由を表示し、人が修正した履歴から改善できます。</p></div></article>
+        <article><span>04</span><div><small>MEASURABLE</small><h3>安全性と効果を改善できる</h3><p>見逃し・過剰マスク・利用件数・削減時間を分けて確認できます。</p></div></article>
       </div>
     </section>
 
     <section id="poc" class="poc-section">
-      <div class="poc-glow"></div>
+      <div class="poc-backdrop"></div>
       <div class="poc-copy">
-        <p class="eyebrow"><span></span> 30-DAY PROOF OF CONCEPT</p>
-        <h2>営業資料ではなく、<br><em>実際の文書で判断してください。</em></h2>
-        <p>自社の議事録・契約書で、マスク漏れ、過剰マスク、回答品質、現場の操作性を30日間確認できます。</p>
-        <div class="poc-points"><span>Windowsアプリ</span><span>企業管理ポータル</span><span>試用ライセンス</span><span>利用状況の可視化</span></div>
+        <p class="kicker"><span></span> 30-DAY PROOF OF CONCEPT</p>
+        <h2>導入を決める前に、<br><em>実際の社内文書で確かめる。</em></h2>
+        <p>営業資料の説明だけで判断する必要はありません。自社の議事録・契約書・提案資料を使い、安全性と回答品質、現場の使いやすさを30日間確認できます。</p>
+        <div class="poc-badges"><span>Windowsアプリ</span><span>企業管理ポータル</span><span>試用ライセンス</span><span>利用状況の可視化</span></div>
       </div>
       <div class="poc-card">
-        <small>PoCで確認すること</small>
-        <ol><li><b>01</b><span>固有情報を十分に検出できるか</span></li><li><b>02</b><span>匿名化後も回答品質を維持できるか</span></li><li><b>03</b><span>現場が迷わず操作できるか</span></li><li><b>04</b><span>管理者が利用状況を把握できるか</span></li></ol>
+        <small>PoCの判断基準</small>
+        <ol>
+          <li><b>01</b><span>必要な固有情報を検出できるか</span></li>
+          <li><b>02</b><span>隠しすぎ・種類違いを直せるか</span></li>
+          <li><b>03</b><span>匿名化後も回答品質を維持できるか</span></li>
+          <li><b>04</b><span>現場と管理者の運用に無理がないか</span></li>
+        </ol>
         <a class="button primary wide" href="../index.html?mode=register"><span>企業アカウントを登録する</span><b>→</b></a>
         <p>登録後、PoC用ライセンスを発行できます。</p>
+      </div>
+    </section>
+
+    <section class="section faq-section">
+      <div class="section-head split">
+        <div><p class="kicker dark"><span></span> FAQ</p><h2>導入前によくある不安</h2></div>
+        <p>できることだけでなく、できないことと運用上の前提も明確にします。</p>
+      </div>
+      <div class="faq-grid">
+        <article><span>Q1</span><h3>ASGが生成AIへ直接送信しますか？</h3><p>いいえ。外部AIへの自動送信機能は持ちません。利用者が匿名化結果を確認してから、会社が許可したAIへ渡します。</p></article>
+        <article><span>Q2</span><h3>匿名化すると回答品質が落ちませんか？</h3><p>役割・業種・関係性を残す「意味保持匿名化」と、原文版・マスク版の回答品質比較で影響を確認できます。</p></article>
+        <article><span>Q3</span><h3>クラウドへ何が送られますか？</h3><p>ライセンス情報、端末ハッシュ、管理者が許可した匿名集計です。原文・辞書・対応表・ファイル名・検出語は送りません。</p></article>
+        <article><span>Q4</span><h3>マスク漏れを完全に防げますか？</h3><p>完全な検出を保証するものではありません。候補と理由を提示し、外部利用前に人が最終確認する前提の設計です。</p></article>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="footer-brand"><span class="brand-mark small"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 40 10v12c0 11-6 18-16 23C14 40 8 33 8 22V10L24 4Z"/><rect x="18" y="22" width="12" height="10" rx="2"/><path d="M20 22v-4a4 4 0 0 1 8 0v4"/></svg></span><div><b>AI Safe Gateway</b><p>企業が安心して生成AIを利用するためのローカル前処理基盤</p></div></div>
+    <div class="footer-brand">
+      <span class="brand-mark small"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 40 10v12c0 11-6 18-16 23C14 40 8 33 8 22V10L24 4Z"/><rect x="18" y="22" width="12" height="10" rx="2"/><path d="M20 22v-4a4 4 0 0 1 8 0v4"/></svg></span>
+      <div><b>AI Safe Gateway</b><p>企業が安心して生成AIを利用するためのローカル前処理基盤</p></div>
+    </div>
     <nav><a href="../index.html">企業ログイン</a><a href="../terms.html">利用規約</a><a href="../privacy.html">プライバシー方針</a><a href="../limitations.html">既知の制限</a><a href="../support.html">サポート</a><a href="../data-deletion.html">解約・削除</a></nav>
     <small>現在はPoC試験提供中です。自動検出は完全ではないため、外部AIへ渡す前に人の最終確認が必要です。</small>
   </footer>

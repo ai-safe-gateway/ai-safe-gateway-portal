@@ -52,8 +52,12 @@
     "sha256": "2929320b5225a7258184ba34ea631ba43b95700a055249f4f59d071bc7073d3d"
   },
   {
+    "file": "lp/conversion.css",
+    "sha256": "d312da23d970f3d9531d8ce5e13370d948a6890280c76afaf9d260f22b2d7ac3"
+  },
+  {
     "file": "lp/index.html",
-    "sha256": "6577e73562c3e93942a1005882416dc36d6a9fcdaef07ab34eb3eb7b089e6322"
+    "sha256": "7fc706a543d5b6fa2c6eb4167c91c0745619f525f984fe52ccf8190c48b05c81"
   },
   {
     "file": "lp/styles.css",
