@@ -32,12 +32,32 @@
     "sha256": "8d4ea1df7f4a6382a59daa9c3106b2f8a97622da2bf4e36bdfdeb082145e4096"
   },
   {
+    "file": "lp/assets/hero-gateway-v2.webp",
+    "sha256": "c2242f803d4f90f32b6402d055f675e24b5f3d86668622ded415ba499980aae3"
+  },
+  {
+    "file": "lp/assets/usecase-analysis.webp",
+    "sha256": "0b1e1b194d92c096e610f94a438fc5601b51ac91ac05c891a01fcb76167dc531"
+  },
+  {
+    "file": "lp/assets/usecase-contract.webp",
+    "sha256": "835174b42bb7c6370be7f6cba456b7eec4196099b913027c104b95aa8d4372dd"
+  },
+  {
+    "file": "lp/assets/usecase-meeting.webp",
+    "sha256": "8102de77eb5847d98ebf3a74eef4a077993eb584d67ae31794622cd3a8e944db"
+  },
+  {
+    "file": "lp/assets/usecase-writing.webp",
+    "sha256": "2929320b5225a7258184ba34ea631ba43b95700a055249f4f59d071bc7073d3d"
+  },
+  {
     "file": "lp/index.html",
-    "sha256": "aba4ef479985e968879043b7fa5673141bbbe60e3271b5d0e18f68f7b28abaa5"
+    "sha256": "6577e73562c3e93942a1005882416dc36d6a9fcdaef07ab34eb3eb7b089e6322"
   },
   {
     "file": "lp/styles.css",
-    "sha256": "04678a126df77faa958085f1bbc0242bd7b3ab24b746198c863b03025adb73e4"
+    "sha256": "d404e461f1816ad0194d70d8093194997d4db44cb976d1e0aed5e91ff3717335"
   },
   {
     "file": "privacy.html",
