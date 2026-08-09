@@ -12,6 +12,7 @@ const state = {
   licenses: [],
   devices: [],
   usage: [],
+  release: null,
   portalBootstrap: null,
   demo: Boolean(config.demoMode || !config.supabaseUrl || !config.supabasePublishableKey),
 };
@@ -61,7 +62,12 @@ const demoData = (() => {
       { id: "1", license_id: "c4b2b217-29cc-4efd-b1a0-445731ac1957", device_hash: "21cf4e4ee581d754…", app_version: "0.35.0", last_seen_at: new Date().toISOString(), active: true },
       { id: "2", license_id: "c4b2b217-29cc-4efd-b1a0-445731ac1957", device_hash: "8c19df38a201cc42…", app_version: "0.35.0", last_seen_at: new Date(Date.now()-86400000).toISOString(), active: true },
       { id: "3", license_id: "44d93d13-c00c-4b83-af25-905df1e42244", device_hash: "570ea8093ccf6f91…", app_version: "0.33.3", last_seen_at: new Date(Date.now()-4*86400000).toISOString(), active: true },
-    ], usage,
+    ],
+    release: {
+      version: "0.37.3", platform: "windows-x64", file_name: "AISafeGatewayPoC-Portable-v0.37.3.exe",
+      size_bytes: 46460293, sha256: "a4e1dc824ac8b8c281cf9ba9fdf093baf0d05a9703af95acb38b6b5e2d6ef120",
+      published_at: "2026-07-31T00:00:00Z", minimum_os: "Windows 10 64-bit", signed: false,
+    }, usage,
   };
 })();
 
@@ -87,6 +93,7 @@ function friendlyError(error) {
     trial_limit_reached: "評価版の発行上限を超えています。既存ライセンスをご利用ください。",
     rate_limited: "操作が集中しています。少し待ってからやり直してください。",
     invalid_request: "入力内容を確認してください。",
+    release_unavailable: "現在ダウンロードできるWindows版がありません。管理者へお問い合わせください。",
   };
   return messages[code] || code || "処理を完了できませんでした。";
 }
@@ -261,6 +268,7 @@ async function loadPortal() {
   state.licenses = bootstrap.licenses || [];
   state.devices = bootstrap.devices || [];
   state.usage = bootstrap.usage || [];
+  state.release = null;
   renderPortal();
 }
 function renderPortal() {
@@ -268,7 +276,7 @@ function renderPortal() {
   $("#companyNameHeader").textContent = state.company.name; $("#companyCodeHeader").textContent = `企業ID ${state.company.company_code}`;
   $("#userAvatar").textContent = (state.member.display_name || state.user.email || "管").slice(0, 1);
   $("#openLicenseModal").hidden = !["owner","admin"].includes(state.member?.role);
-  renderDashboard(); renderLicenses(); renderMyPage();
+  renderDashboard(); renderLicenses(); renderMyPage(); renderDownloads();
 }
 
 function filteredUsage() {
@@ -396,6 +404,81 @@ $("#resetRoiSettings").addEventListener("click", () => {
   $("#roiReviewSeconds").value = settings.reviewSeconds;
 });
 
+function formatFileSize(bytes) {
+  const size = Number(bytes || 0);
+  if (!size) return "—";
+  return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+function renderDownloads() {
+  const release = state.release;
+  const button = $("#downloadWindowsButton");
+  if (!release) {
+    $("#releaseMeta").innerHTML = "<span>最新版を確認しています…</span>";
+    $("#releaseHash").textContent = "確認中";
+    $("#releaseSignature").textContent = "確認中";
+    $("#downloadAvailability").textContent = "公開ファイルを確認しています。";
+    $("#copyReleaseHash").disabled = true;
+    button.disabled = true;
+    return;
+  }
+  $("#releaseMeta").innerHTML = [
+    `Version ${escapeHtml(release.version)}`,
+    escapeHtml(formatFileSize(release.size_bytes)),
+    escapeHtml(release.platform === "windows-x64" ? "Windows 64-bit" : release.platform),
+    "ポータブル版",
+  ].map(value => `<span>${value}</span>`).join("");
+  $("#releaseOs").textContent = release.minimum_os || "Windows 10 / 11 64-bit";
+  $("#releaseSignature").textContent = release.signed ? "コード署名済み" : "評価版・未署名";
+  $("#releaseHash").textContent = release.sha256;
+  $("#copyReleaseHash").disabled = false;
+  $("#downloadAvailability").textContent = `公開日 ${formatDate(release.published_at)}・URLは発行後3分間だけ有効です。`;
+  button.disabled = false;
+}
+async function loadReleaseMetadata() {
+  if (state.release) { renderDownloads(); return; }
+  renderDownloads();
+  try {
+    const result = await invoke("release-download", { action: "metadata" });
+    state.release = result.release;
+    renderDownloads();
+  } catch (error) {
+    $("#downloadAvailability").textContent = friendlyError(error);
+    $("#releaseMeta").innerHTML = "<span>現在利用できません</span>";
+  }
+}
+$("#downloadWindowsButton").addEventListener("click", async () => {
+  const button = $("#downloadWindowsButton");
+  const original = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = '<span class="download-button-icon">…</span><span><small>安全なURLを発行中</small><strong>ダウンロードを準備しています</strong></span><b>→</b>';
+  try {
+    if (state.demo) {
+      showNotice("デモ画面ではEXEをダウンロードしません。企業登録後に利用できます。", "error");
+      return;
+    }
+    const result = await invoke("release-download", { action: "download" });
+    state.release = result.release;
+    renderDownloads();
+    const link = document.createElement("a");
+    link.href = result.signed_url;
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    showNotice(`Windows版 v${result.release.version} のダウンロードを開始しました。`);
+  } catch (error) {
+    showNotice(`ダウンロードできません：${friendlyError(error)}`, "error");
+  } finally {
+    button.innerHTML = original;
+    button.disabled = !state.release;
+  }
+});
+$("#copyReleaseHash").addEventListener("click", async () => {
+  if (!state.release?.sha256) return;
+  await navigator.clipboard.writeText(state.release.sha256);
+  showNotice("SHA-256をコピーしました。");
+});
+
 function renderLicenses() {
   const totalSeats = state.licenses.filter(item => item.status === "active").reduce((sum, item) => sum + Number(item.seats || 0), 0);
   const activeDevices = state.devices.filter(item => item.active).length;
@@ -426,6 +509,7 @@ function showView(name) {
   $$(".view").forEach(view => view.classList.toggle("active", view.id === `${name}View`));
   $$(".nav-button").forEach(button => button.classList.toggle("active", button.dataset.view === name));
   $(".sidebar").classList.remove("open");
+  if (name === "downloads") loadReleaseMetadata();
 }
 $$(".nav-button").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
 $$('[data-go]').forEach(button => button.addEventListener("click", () => showView(button.dataset.go)));

@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>AI Safe Gateway | 企業管理ポータル</title>
-  <link rel="stylesheet" href="styles.css?v=0.4.0">
+  <link rel="stylesheet" href="styles.css?v=0.5.0">
 </head>
 <body>
   <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
@@ -79,6 +79,7 @@
       </div>
       <nav aria-label="メインメニュー">
         <button class="nav-button active" data-view="dashboard"><span>▦</span>活用効果ダッシュボード</button>
+        <button class="nav-button" data-view="downloads"><span>↓</span>Windows版</button>
         <button class="nav-button" data-view="licenses"><span>◇</span>ライセンス・端末</button>
         <button class="nav-button" data-view="mypage"><span>○</span>企業マイページ</button>
       </nav>
@@ -114,6 +115,28 @@
           </div>
         </section>
 
+        <section id="downloadsView" class="view">
+          <div class="page-heading download-page-heading"><div><p class="eyebrow dark">WINDOWS APPLICATION</p><h2>Windows版をダウンロード</h2><p>登録済み企業向けのPoCアプリです。ダウンロードURLは発行後3分で無効になります。</p></div><span class="private-download-badge">登録企業限定</span></div>
+          <section class="download-hero">
+            <div class="download-visual" aria-hidden="true">
+              <div class="download-orbit orbit-one"></div><div class="download-orbit orbit-two"></div>
+              <div class="windows-device"><span>ASG</span><i></i></div>
+            </div>
+            <div class="download-copy">
+              <p class="panel-kicker">AI SAFE GATEWAY FOR WINDOWS</p>
+              <h3>このPCで、安全化を始める</h3>
+              <p>インストール不要のポータブル版です。原文・辞書・対応表はPC内で処理され、生成AIへ自動送信されません。</p>
+              <div id="releaseMeta" class="release-meta"><span>最新版を確認しています…</span></div>
+              <button id="downloadWindowsButton" class="download-primary" type="button" disabled><span class="download-button-icon">↓</span><span><small>登録済み企業向け</small><strong>Windows版をダウンロード</strong></span><b>→</b></button>
+              <p id="downloadAvailability" class="download-availability">公開ファイルを確認しています。</p>
+            </div>
+          </section>
+          <div class="download-info-grid">
+            <article class="panel download-steps"><div class="panel-head"><div><p class="panel-kicker">START GUIDE</p><h3>利用開始まで3ステップ</h3></div></div><ol><li><b>01</b><div><strong>EXEをダウンロード</strong><span>この画面から最新版を取得</span></div></li><li><b>02</b><div><strong>評価ライセンスを読み込む</strong><span>企業登録時に保存した.asglicenseを使用</span></div></li><li><b>03</b><div><strong>自社文書で確認</strong><span>外部AIへ渡す前に必ず最終確認</span></div></li></ol></article>
+            <article class="panel download-security"><div class="panel-head"><div><p class="panel-kicker">SECURITY CHECK</p><h3>取得したファイルを確認</h3></div></div><dl><dt>対応OS</dt><dd id="releaseOs">Windows 10 / 11 64-bit</dd><dt>コード署名</dt><dd id="releaseSignature">確認中</dd><dt>SHA-256</dt><dd><code id="releaseHash">確認中</code><button id="copyReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd></dl><p class="download-warning">署名がない評価版ではWindows SmartScreenが表示される場合があります。ファイル名とSHA-256がこの画面と一致することを確認してください。</p></article>
+          </div>
+        </section>
+
         <section id="licensesView" class="view">
           <div class="page-heading"><div><p class="eyebrow dark">LICENSE CONTROL</p><h2>ライセンス・端末</h2><p>契約ライセンスと認証されたPCを確認します。</p></div><button id="openLicenseModal" class="primary-small" type="button">ライセンスを発行</button></div>
           <div id="licenseSummary" class="summary-strip"></div>
@@ -145,6 +168,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.4.0"></script>
+  <script type="module" src="app.js?v=0.5.0"></script>
 </body>
 </html>

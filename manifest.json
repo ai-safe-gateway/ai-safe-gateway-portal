@@ -9,7 +9,7 @@
   },
   {
     "file": "app.js",
-    "sha256": "74a6215d672652effe29d9146c154997fe2731f046974b73b9dda2bb410cdcc5"
+    "sha256": "44e39f445e627020c1f70515d3f1129fb1cb943e97e03c3539be5042e77aa0e9"
   },
   {
     "file": "config.js",
@@ -21,7 +21,7 @@
   },
   {
     "file": "index.html",
-    "sha256": "c2d75f5350b3f73026e0ba8ee36cd6529dfc62de3c2027a1341c558018431fc5"
+    "sha256": "b40f921adf389662bf83bd3d12ff5777d601685369f5989f63483a4247bfe9ed"
   },
   {
     "file": "legal.css",
@@ -53,11 +53,11 @@
   },
   {
     "file": "lp/conversion.css",
-    "sha256": "c8229c4a9b378b64f58f5d9c44016a41851500a12bafee98eafa8b6c1999906a"
+    "sha256": "d5d3d04cff36f961b46ac566eef96c01aefc2d17663cc5d44e756a65bbe3b415"
   },
   {
     "file": "lp/index.html",
-    "sha256": "b36db8274a9d41194584163a095cc8aeace5a4e67edfbec71413975873788bc3"
+    "sha256": "0ebbb7fb731d144e6a6dacaebd99974350aab94aa55d9edad8c4264e9eb2a350"
   },
   {
     "file": "lp/styles.css",
@@ -73,7 +73,7 @@
   },
   {
     "file": "styles.css",
-    "sha256": "acd3c3169611d19b4b52aebd151be21f3755fdf541b253b11fc4a16023f2ed9e"
+    "sha256": "fdf612611762396e8b3d9ab8597be5e372641794acab0dac121ba83433d38754"
   },
   {
     "file": "support.html",
