@@ -7,7 +7,7 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>AI Safe Gateway | 企業管理ポータル</title>
-  <link rel="stylesheet" href="styles.css?v=0.5.0">
+  <link rel="stylesheet" href="styles.css?v=0.6.0">
 </head>
 <body>
   <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
@@ -51,7 +51,7 @@
           <label class="consent compact-consent"><input id="rememberLogin" type="checkbox" checked><span>このブラウザでログイン状態を保持する</span></label>
           <button id="forgotPassword" class="form-link" type="button">パスワードを忘れた場合</button>
           <button class="primary-button" type="submit">ログイン</button>
-          <button id="demoLogin" class="demo-button" type="button">デモ画面を確認</button>
+          <button id="demoLogin" class="demo-button" type="button">3つの製品デモを体験</button>
           <p class="form-note">本番環境ではSupabase Authで認証します。</p>
         </form>
 
@@ -78,7 +78,10 @@
         <div><strong>AI Safe Gateway</strong><small>企業管理ポータル</small></div>
       </div>
       <nav aria-label="メインメニュー">
-        <button class="nav-button active" data-view="dashboard"><span>▦</span>活用効果ダッシュボード</button>
+        <button class="nav-button active" data-view="productdemo"><span>✦</span>製品デモ</button>
+        <button class="nav-button" data-view="windowsdemo"><span>▤</span>Windows版を体験</button>
+        <button class="nav-button" data-view="browserdemo"><span>◈</span>Browser Guardを体験</button>
+        <button class="nav-button" data-view="dashboard"><span>▦</span>活用効果ダッシュボード</button>
         <button class="nav-button" data-view="downloads"><span>↓</span>Windows版</button>
         <button class="nav-button" data-view="licenses"><span>◇</span>ライセンス・端末</button>
         <button class="nav-button" data-view="mypage"><span>○</span>企業マイページ</button>
@@ -95,7 +98,80 @@
       </header>
 
       <main class="content">
-        <section id="dashboardView" class="view active">
+        <section id="productdemoView" class="view active">
+          <div class="demo-hero">
+            <div>
+              <p class="eyebrow demo-eyebrow">INTERACTIVE PRODUCT TOUR</p>
+              <h2>AIへ送る前に、守る流れを体験</h2>
+              <p>サンプルデータだけを使い、Windows版・Browser Guard・管理画面を一つのURLで確認できます。</p>
+            </div>
+            <div class="demo-local-badge"><span></span><strong>外部送信なし</strong><small>このブラウザ内で再現</small></div>
+          </div>
+          <div class="demo-journey" aria-label="製品デモの流れ">
+            <article><b>01</b><span class="journey-icon document-icon" aria-hidden="true"></span><div><small>PREPARE</small><strong>Windows版で安全化</strong><p>機密情報を検出し、意味を保つ表現へ置換</p></div><button class="demo-cta" data-go="windowsdemo" type="button">操作する <span>→</span></button></article>
+            <i aria-hidden="true">→</i>
+            <article><b>02</b><span class="journey-icon browser-icon" aria-hidden="true"></span><div><small>PROTECT</small><strong>送信直前にブロック</strong><p>誤送信を止め、安全化した文章へ差し替え</p></div><button class="demo-cta" data-go="browserdemo" type="button">操作する <span>→</span></button></article>
+            <i aria-hidden="true">→</i>
+            <article><b>03</b><span class="journey-icon chart-icon" aria-hidden="true"></span><div><small>VISUALIZE</small><strong>活用効果を把握</strong><p>利用・安全・削減時間を本文なしで可視化</p></div><button class="demo-cta" data-go="dashboard" type="button">確認する <span>→</span></button></article>
+          </div>
+          <div class="demo-assurance"><span>✓</span><div><strong>実製品の設計思想を、そのまま疑似体験</strong><p>原文・辞書・対応表は保存・送信されません。デモはサンプルデータをブラウザ内のJavaScriptだけで処理します。</p></div></div>
+        </section>
+
+        <section id="windowsdemoView" class="view">
+          <div class="page-heading demo-page-heading">
+            <div><p class="eyebrow dark">WINDOWS APP DEMO</p><h2>意味を残して、機密情報だけを隠す</h2><p>候補を確認してから出力する、実製品と同じ基本フローを体験できます。</p></div>
+            <button class="secondary-button" data-go="productdemo" type="button">デモ一覧へ戻る</button>
+          </div>
+          <div class="demo-stepbar" id="maskDemoSteps"><span class="active"><b>1</b>文書を確認</span><i></i><span><b>2</b>候補を確認</span><i></i><span><b>3</b>安全化して出力</span></div>
+          <section class="mask-demo-shell">
+            <div class="mask-demo-editor">
+              <div class="demo-panel-head"><div><small>INPUT / LOCAL ONLY</small><h3>安全化する議事録</h3></div><span class="local-pill">● この端末内</span></div>
+              <textarea id="maskDemoInput" spellcheck="false">株式会社ミライ通信との提案会議を実施しました。営業担当の山田太郎が、案件コードPJ-2026-081の見積書を8月31日までに提出します。連絡先は03-1234-5678、sales@mirai.example.jpです。</textarea>
+              <div class="demo-editor-actions"><button id="resetMaskDemo" class="secondary-button" type="button">サンプルに戻す</button><button id="analyzeMaskDemo" class="demo-primary" type="button"><span>⌕</span> PC内で検出する</button></div>
+            </div>
+            <div class="mask-demo-review">
+              <div class="demo-panel-head"><div><small>REVIEW</small><h3>マスク候補</h3></div><span id="maskDemoCount" class="count-pill">解析待ち</span></div>
+              <div id="maskDemoCandidates" class="demo-empty-state"><span>⌕</span><strong>左の文書を解析してください</strong><p>検出候補と置換後の意味がここに表示されます。</p></div>
+              <button id="applyMaskDemo" class="demo-primary full" type="button" disabled>確認した候補を安全化</button>
+            </div>
+          </section>
+          <section id="maskDemoResult" class="mask-demo-result" hidden>
+            <div class="demo-panel-head"><div><small>SAFE OUTPUT</small><h3>生成AIへ渡せる安全化済み文章</h3></div><span class="safe-pill">✓ 安全化完了</span></div>
+            <div class="result-layout"><pre id="maskDemoOutput"></pre><div><h4>意味対応</h4><div id="maskDemoMapping" class="mapping-list"></div></div></div>
+            <div class="demo-result-actions"><button id="copyMaskDemo" class="secondary-button" type="button">安全化文をコピー</button><button class="demo-primary" data-go="browserdemo" type="button">送信防止デモへ進む →</button></div>
+          </section>
+        </section>
+
+        <section id="browserdemoView" class="view">
+          <div class="page-heading demo-page-heading">
+            <div><p class="eyebrow dark">BROWSER GUARD DEMO</p><h2>うっかり送信を、AIの直前で止める</h2><p>入力・添付を検知し、安全化を確認するまで送信させない動作を体験できます。</p></div>
+            <button class="secondary-button" data-go="productdemo" type="button">デモ一覧へ戻る</button>
+          </div>
+          <div class="guard-demo-layout">
+            <section class="browser-mock">
+              <div class="browser-bar"><div class="browser-dots"><i></i><i></i><i></i></div><div class="browser-address">🔒 generative-ai.example / chat</div><span id="guardTargetLabel">ChatGPT</span></div>
+              <div class="ai-service-switch" role="tablist" aria-label="対象AI"><button class="active" data-ai-service="ChatGPT" type="button">ChatGPT</button><button data-ai-service="Gemini" type="button">Gemini</button><button data-ai-service="Claude" type="button">Claude</button><button data-ai-service="Copilot" type="button">Copilot</button></div>
+              <div id="guardChat" class="guard-chat"><div class="guard-welcome"><span class="guard-shield">ASG</span><strong>送信前の保護を体験</strong><p>下の文章には個人情報が含まれています。</p></div></div>
+              <div class="guard-composer">
+                <textarea id="guardDemoInput" rows="3">山田太郎さんの電話番号は03-1234-5678です。折り返しをお願いします。</textarea>
+                <div class="guard-composer-actions"><button id="guardAttachmentDemo" class="attachment-button" type="button" title="添付の保護を試す">＋ <span>ファイル</span></button><span class="guard-active-indicator"><i></i> ASG保護中</span><button id="guardSendDemo" class="guard-send" type="button" aria-label="送信を試す">↑</button></div>
+              </div>
+            </section>
+            <aside class="guard-demo-side">
+              <div class="guard-status-card"><small>PRE-SEND CONTROL</small><div class="guard-status-orbit"><span>✓</span></div><h3>送信ボタンの手前で検査</h3><p>ページへ入力した文字は、外へ送る前にPC内のASGへ確認されます。</p></div>
+              <ol class="guard-flow"><li class="active"><b>1</b><span><strong>送信を試す</strong><small>電話番号入りのまま送信</small></span></li><li><b>2</b><span><strong>Browser Guardが停止</strong><small>安全化候補を確認</small></span></li><li><b>3</b><span><strong>安全化後に送信</strong><small>匿名表現だけを反映</small></span></li></ol>
+              <p class="demo-disclaimer">デモのため、実際の生成AIには送信されません。</p>
+            </aside>
+          </div>
+          <div id="guardIntervention" class="guard-intervention" hidden>
+            <div class="guard-intervention-head"><span>!</span><div><small>AI SAFE GATEWAY / BLOCKED</small><h3 id="guardInterventionTitle">保護対象を検出したため送信を停止しました</h3></div></div>
+            <div id="guardFindingList" class="guard-findings"></div>
+            <label>AIへ渡す安全化済み文章<textarea id="guardSafeText" rows="4"></textarea></label>
+            <div class="demo-result-actions"><button id="guardCancelDemo" class="secondary-button" type="button">入力へ戻る</button><button id="guardApplyDemo" class="demo-primary" type="button">安全化した文章を反映</button></div>
+          </div>
+        </section>
+
+        <section id="dashboardView" class="view">
           <div class="page-heading">
             <div><p class="eyebrow dark">EXECUTIVE OVERVIEW</p><h2>AI活用・安全・業務効果</h2><p>利用定着、安全運用、活用領域、削減時間を本文なしで確認します。</p></div>
             <div class="dashboard-controls"><button id="openRoiSettings" class="secondary-button compact" type="button">時間の試算条件</button><select id="periodSelect" aria-label="集計期間"><option value="30">直近30日</option><option value="90">直近90日</option><option value="all">全期間</option></select></div>
@@ -168,6 +244,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.5.0"></script>
+  <script type="module" src="app.js?v=0.6.0"></script>
 </body>
 </html>

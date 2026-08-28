@@ -1,35 +1,31 @@
 [
   {
-    "file": ".github/workflows/deploy-pages.yml",
-    "sha256": "613eeed6313d47c133129c14e32157f06ba89c8ce7928ec806bcb617818b75cb"
-  },
-  {
     "file": ".nojekyll",
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   {
     "file": "app.js",
-    "sha256": "44e39f445e627020c1f70515d3f1129fb1cb943e97e03c3539be5042e77aa0e9"
+    "sha256": "8cf599da609aeb27372fada92160859daad8a4ff16a7bc07bcfb7aeaad8bb3fb"
   },
   {
     "file": "config.js",
-    "sha256": "57dd5b47dd7a4c688672b8e31e17bb53190eb3f77e91d337930926e10fdc1697"
+    "sha256": "3a860fb761a07e8b9d9cce83fd7e2f8a8ff03db36d0cd8fd64023bd6f4ba8149"
   },
   {
     "file": "data-deletion.html",
-    "sha256": "13c69927f2603296c4ca8278b407c332119fc87a70065af5a02133178082202f"
+    "sha256": "31598bd4cf0fb304aa25cb5e774d2716d41a6b724a15417843519bb7d12d4a9d"
   },
   {
     "file": "index.html",
-    "sha256": "b40f921adf389662bf83bd3d12ff5777d601685369f5989f63483a4247bfe9ed"
+    "sha256": "885c9d90c5e908d04a9cb34df58b94c639f6431b225f8812ccac9865d60bf2c2"
   },
   {
     "file": "legal.css",
-    "sha256": "83710fc31805fa77cd687a95107b10cb35f79e97313e69c91c057377eb20b524"
+    "sha256": "663c266fe43512fd01af5e065935c2a862aa43365ca60c3ecf6341ab1fee1415"
   },
   {
     "file": "limitations.html",
-    "sha256": "8d4ea1df7f4a6382a59daa9c3106b2f8a97622da2bf4e36bdfdeb082145e4096"
+    "sha256": "4cd042ba625f75fe354303da4dba3bda555e5fe94cd6de8f58b452505c5926f1"
   },
   {
     "file": "lp/assets/hero-gateway-v2.webp",
@@ -53,34 +49,34 @@
   },
   {
     "file": "lp/conversion.css",
-    "sha256": "d5d3d04cff36f961b46ac566eef96c01aefc2d17663cc5d44e756a65bbe3b415"
+    "sha256": "8041b049c26f9388e98bac2735732faf02674b536300ec1f615285fc6c297711"
   },
   {
     "file": "lp/index.html",
-    "sha256": "0ebbb7fb731d144e6a6dacaebd99974350aab94aa55d9edad8c4264e9eb2a350"
+    "sha256": "e892502515ffd2e73f4bba12415b05a89e7c9eef06b15363280f5cf4f2ac2d7f"
   },
   {
     "file": "lp/styles.css",
-    "sha256": "d404e461f1816ad0194d70d8093194997d4db44cb976d1e0aed5e91ff3717335"
+    "sha256": "66ca787ad1299cf9fc0b3e89a4edf011c450df0eecbf2c7ead7e4ce977bfe91a"
   },
   {
     "file": "privacy.html",
-    "sha256": "9de39bbb3e8f20602f66a39cf5da21b8e5ec033bda067bb5d262b8135708b10a"
+    "sha256": "0b91454fc2bce4fb03de53fd2ba7f9106e9dda047d41592efa643ba50df66d6f"
   },
   {
     "file": "README.md",
-    "sha256": "52dbbae6a03b845c1607e4fcdebe788ce5ffd711ae99ea75aab3ee28de0adadf"
+    "sha256": "dbb80dd4e3a5bf1f8f69c5bed8d6b6448d83077ca214a7385756e4766fd5b060"
   },
   {
     "file": "styles.css",
-    "sha256": "fdf612611762396e8b3d9ab8597be5e372641794acab0dac121ba83433d38754"
+    "sha256": "200adc5bd4afe9abdb513da218344f8ba5889c41020ddd4c414f20d919845077"
   },
   {
     "file": "support.html",
-    "sha256": "13869497d9c1eaf138645bc6a8db1a0a051899502b7cd7182506fa75870d00e3"
+    "sha256": "a15a1e6441d2121b1cb8c146fe6c7fcf2c2c457a500f9c8faf7befc2a4067595"
   },
   {
     "file": "terms.html",
-    "sha256": "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
+    "sha256": "a09cc26c3a1987d87bfb8d78cb0c3c7e51974d72bf24d907af0e5d8d58da2856"
   }
 ]

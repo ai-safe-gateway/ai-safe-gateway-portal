@@ -64,7 +64,7 @@ const demoData = (() => {
       { id: "3", license_id: "44d93d13-c00c-4b83-af25-905df1e42244", device_hash: "570ea8093ccf6f91…", app_version: "0.33.3", last_seen_at: new Date(Date.now()-4*86400000).toISOString(), active: true },
     ],
     release: {
-      version: "0.37.3", platform: "windows-x64", file_name: "AISafeGatewayPoC-Portable-v0.37.3.exe",
+      version: "0.38.0", platform: "windows-x64", file_name: "AISafeGatewayPoC-Portable-v0.38.0.exe",
       size_bytes: 46460293, sha256: "a4e1dc824ac8b8c281cf9ba9fdf093baf0d05a9703af95acb38b6b5e2d6ef120",
       published_at: "2026-07-31T00:00:00Z", minimum_os: "Windows 10 64-bit", signed: false,
     }, usage,
@@ -254,6 +254,7 @@ $("#registerForm").addEventListener("submit", async event => {
 function enterDemo() {
   Object.assign(state, demoData, { demo: true, session: { access_token: "demo" } });
   renderPortal();
+  showView("productdemo");
 }
 async function loadPortal() {
   if (state.demo) return enterDemo();
@@ -270,6 +271,7 @@ async function loadPortal() {
   state.usage = bootstrap.usage || [];
   state.release = null;
   renderPortal();
+  showView("dashboard");
 }
 function renderPortal() {
   $("#authShell").hidden = true; $("#portalShell").hidden = false;
@@ -384,7 +386,7 @@ function renderDashboard() {
   if (dominantUse?.[1] > 0) insights.push(["→", useAdvice[0], useAdvice[1]]);
   if (!insights.length) insights.push(["✓", "安定して運用中", "利用・安全・品質・削減時間に大きな注意点はありません。月次で傾向を確認してください。"]);
   $("#insightList").innerHTML = insights.slice(0, 3).map(([icon, title, copy]) => `<div class="insight"><span class="insight-icon">${icon}</span><div><strong>${escapeHtml(title)}</strong><small>${escapeHtml(copy)}</small></div></div>`).join("");
-  $("#payloadPreview").textContent = JSON.stringify({ company_id: state.company.id, license_id_hash: "SHA-256…", device_hash: "SHA-256…", app_version: "0.37.3", counts, time_assumption_sent: false, contains: { raw_text: false, file_names: false, detected_terms: false, dictionary_values: false, mapping_values: false, ai_answers: false } }, null, 2);
+  $("#payloadPreview").textContent = JSON.stringify({ company_id: state.company.id, license_id_hash: "SHA-256…", device_hash: "SHA-256…", app_version: "0.38.0", counts, time_assumption_sent: false, contains: { raw_text: false, file_names: false, detected_terms: false, dictionary_values: false, mapping_values: false, ai_answers: false } }, null, 2);
 }
 $("#periodSelect").addEventListener("change", renderDashboard);
 $("#openRoiSettings").addEventListener("click", () => {
@@ -519,6 +521,151 @@ $("#openLicenseModal").addEventListener("click", () => $("#licenseDialog").showM
 $$('[data-close]').forEach(button => button.addEventListener("click", () => $(`#${button.dataset.close}`).close()));
 $("#copyCompanyId").addEventListener("click", async () => { await navigator.clipboard.writeText(state.company.company_code); showNotice("企業IDをコピーしました。"); });
 $("#refreshButton").addEventListener("click", async () => { try { if (!state.demo) await loadPortal(); else renderPortal(); showNotice("最新状態へ更新しました。"); } catch (error) { showNotice(error.message,"error"); } });
+
+const MASK_DEMO_SAMPLE = "株式会社ミライ通信との提案会議を実施しました。営業担当の山田太郎が、案件コードPJ-2026-081の見積書を8月31日までに提出します。連絡先は03-1234-5678、sales@mirai.example.jpです。";
+const MASK_DEMO_RULES = [
+  { type: "企業名", role: "通信会社", replacement: "[通信会社A]", pattern: /株式会社ミライ通信/gu },
+  { type: "人物名", role: "営業担当", replacement: "[営業担当A]", pattern: /山田太郎/gu },
+  { type: "案件コード", role: "提案案件", replacement: "[案件A]", pattern: /PJ-\d{4}-\d{3}/gu },
+  { type: "電話番号", role: "連絡先", replacement: "[電話番号A]", pattern: /(?<!\d)0\d{1,4}-\d{1,4}-\d{3,4}(?!\d)/gu },
+  { type: "メール", role: "連絡先", replacement: "[メールA]", pattern: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/giu },
+];
+let maskDemoCandidates = [];
+let guardDemoMode = "text";
+
+function detectDemoEntities(text) {
+  const findings = [];
+  MASK_DEMO_RULES.forEach(rule => {
+    for (const match of text.matchAll(rule.pattern)) {
+      findings.push({ ...rule, original: match[0], start: match.index, end: match.index + match[0].length, selected: true });
+    }
+  });
+  return findings.sort((a, b) => a.start - b.start).filter((item, index, all) => !all.slice(0, index).some(other => item.start < other.end && item.end > other.start));
+}
+
+function replaceDemoEntities(text, findings) {
+  return findings.filter(item => item.selected).sort((a, b) => b.start - a.start).reduce((result, item) => `${result.slice(0, item.start)}${item.replacement}${result.slice(item.end)}`, text);
+}
+
+function setMaskDemoStep(step) {
+  const spans = $$("#maskDemoSteps span");
+  const lines = $$("#maskDemoSteps i");
+  spans.forEach((item, index) => item.classList.toggle("active", index === step - 1));
+  lines.forEach((item, index) => item.classList.toggle("done", index < step - 1));
+}
+
+function renderMaskDemoCandidates() {
+  const host = $("#maskDemoCandidates");
+  $("#maskDemoCount").textContent = `${maskDemoCandidates.length}件を検出`;
+  if (!maskDemoCandidates.length) {
+    host.className = "demo-empty-state";
+    host.innerHTML = "<span>✓</span><strong>保護対象は見つかりませんでした</strong><p>サンプルに戻して再度お試しください。</p>";
+    $("#applyMaskDemo").disabled = true;
+    return;
+  }
+  host.className = "candidate-list";
+  host.innerHTML = maskDemoCandidates.map((item, index) => `<label class="candidate-item"><input type="checkbox" data-mask-demo-index="${index}" ${item.selected ? "checked" : ""}><span><strong>${escapeHtml(item.original)}</strong><small>${escapeHtml(item.type)} · ${escapeHtml(item.role)}として保護</small></span><span>${escapeHtml(item.replacement)}</span></label>`).join("");
+  $("#applyMaskDemo").disabled = !maskDemoCandidates.some(item => item.selected);
+}
+
+$("#analyzeMaskDemo").addEventListener("click", () => {
+  const text = $("#maskDemoInput").value.trim();
+  if (!text) { showNotice("安全化する文章を入力してください。", "error"); return; }
+  maskDemoCandidates = detectDemoEntities(text);
+  renderMaskDemoCandidates();
+  $("#maskDemoResult").hidden = true;
+  setMaskDemoStep(2);
+});
+
+$("#maskDemoCandidates").addEventListener("change", event => {
+  const input = event.target.closest("[data-mask-demo-index]");
+  if (!input) return;
+  maskDemoCandidates[Number(input.dataset.maskDemoIndex)].selected = input.checked;
+  $("#applyMaskDemo").disabled = !maskDemoCandidates.some(item => item.selected);
+});
+
+$("#applyMaskDemo").addEventListener("click", () => {
+  const selected = maskDemoCandidates.filter(item => item.selected);
+  if (!selected.length) return;
+  $("#maskDemoOutput").textContent = replaceDemoEntities($("#maskDemoInput").value, selected);
+  $("#maskDemoMapping").innerHTML = selected.map(item => `<span>${escapeHtml(item.original)}<b>→ ${escapeHtml(item.replacement)}</b></span>`).join("");
+  $("#maskDemoResult").hidden = false;
+  setMaskDemoStep(3);
+  $("#maskDemoResult").scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
+$("#resetMaskDemo").addEventListener("click", () => {
+  $("#maskDemoInput").value = MASK_DEMO_SAMPLE;
+  maskDemoCandidates = [];
+  $("#maskDemoCandidates").className = "demo-empty-state";
+  $("#maskDemoCandidates").innerHTML = "<span>⌕</span><strong>左の文書を解析してください</strong><p>検出候補と置換後の意味がここに表示されます。</p>";
+  $("#maskDemoCount").textContent = "解析待ち";
+  $("#applyMaskDemo").disabled = true;
+  $("#maskDemoResult").hidden = true;
+  setMaskDemoStep(1);
+});
+
+$("#copyMaskDemo").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("#maskDemoOutput").textContent); showNotice("安全化済み文章をコピーしました。"); }
+  catch { showNotice("コピーできませんでした。文章を選択してコピーしてください。", "error"); }
+});
+
+function updateGuardFlow(step) {
+  $$(".guard-flow li").forEach((item, index) => {
+    item.classList.toggle("active", index === step - 1);
+    item.classList.toggle("done", index < step - 1 || step === 4);
+  });
+}
+
+function openGuardIntervention(findings, mode = "text") {
+  guardDemoMode = mode;
+  const panel = $("#guardIntervention");
+  panel.hidden = false;
+  panel.classList.toggle("blocked-file", mode === "file");
+  if (mode === "file") {
+    $("#guardInterventionTitle").textContent = "安全確認できないファイルの添付を停止しました";
+    $("#guardFindingList").innerHTML = '<span>顧客一覧.xlsx</span><span>ブラウザからの直接添付</span>';
+    $("#guardSafeText").value = "ファイルはAI Safe Gateway Windows版で安全化してから添付してください。";
+    $("#guardSafeText").readOnly = true;
+    $("#guardApplyDemo").textContent = "Windows版デモを開く";
+  } else {
+    $("#guardInterventionTitle").textContent = "保護対象を検出したため送信を停止しました";
+    $("#guardFindingList").innerHTML = findings.map(item => `<span>${escapeHtml(item.type)}：${escapeHtml(item.original)}</span>`).join("");
+    $("#guardSafeText").value = replaceDemoEntities($("#guardDemoInput").value, findings);
+    $("#guardSafeText").readOnly = false;
+    $("#guardApplyDemo").textContent = "安全化した文章を反映";
+  }
+  updateGuardFlow(2);
+  panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function completeGuardDemo() {
+  const text = $("#guardDemoInput").value.trim();
+  if (!text) { showNotice("送信する文章を入力してください。", "error"); return; }
+  $("#guardChat").innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
+  updateGuardFlow(4);
+  showNotice("安全化済み文章だけを送信できる状態になりました。デモのため実送信はしていません。");
+}
+
+$("#guardSendDemo").addEventListener("click", () => {
+  const findings = detectDemoEntities($("#guardDemoInput").value);
+  if (findings.length) openGuardIntervention(findings);
+  else completeGuardDemo();
+});
+$("#guardAttachmentDemo").addEventListener("click", () => openGuardIntervention([], "file"));
+$("#guardCancelDemo").addEventListener("click", () => { $("#guardIntervention").hidden = true; updateGuardFlow(1); $("#guardDemoInput").focus(); });
+$("#guardApplyDemo").addEventListener("click", () => {
+  if (guardDemoMode === "file") { $("#guardIntervention").hidden = true; showView("windowsdemo"); return; }
+  $("#guardDemoInput").value = $("#guardSafeText").value;
+  $("#guardIntervention").hidden = true;
+  updateGuardFlow(3);
+  $("#guardSendDemo").focus();
+  showNotice("安全化済み文章を入力欄へ反映しました。もう一度送信を試してください。");
+});
+$$('[data-ai-service]').forEach(button => button.addEventListener("click", () => {
+  $$('[data-ai-service]').forEach(item => item.classList.toggle("active", item === button));
+  $("#guardTargetLabel").textContent = button.dataset.aiService;
+}));
 $("#logoutButton").addEventListener("click", async () => {
   try { if (!state.demo && state.session) await fetch(`${config.supabaseUrl}/auth/v1/logout`, { method:"POST", headers:sessionHeaders() }); } catch {}
   clearStoredSession(); location.reload();
