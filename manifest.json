@@ -1,82 +1,86 @@
-[
-  {
-    "file": ".nojekyll",
-    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  },
-  {
-    "file": "app.js",
-    "sha256": "8cf599da609aeb27372fada92160859daad8a4ff16a7bc07bcfb7aeaad8bb3fb"
-  },
-  {
-    "file": "config.js",
-    "sha256": "3a860fb761a07e8b9d9cce83fd7e2f8a8ff03db36d0cd8fd64023bd6f4ba8149"
-  },
-  {
-    "file": "data-deletion.html",
-    "sha256": "31598bd4cf0fb304aa25cb5e774d2716d41a6b724a15417843519bb7d12d4a9d"
-  },
-  {
-    "file": "index.html",
-    "sha256": "885c9d90c5e908d04a9cb34df58b94c639f6431b225f8812ccac9865d60bf2c2"
-  },
-  {
-    "file": "legal.css",
-    "sha256": "663c266fe43512fd01af5e065935c2a862aa43365ca60c3ecf6341ab1fee1415"
-  },
-  {
-    "file": "limitations.html",
-    "sha256": "4cd042ba625f75fe354303da4dba3bda555e5fe94cd6de8f58b452505c5926f1"
-  },
-  {
-    "file": "lp/assets/hero-gateway-v2.webp",
-    "sha256": "c2242f803d4f90f32b6402d055f675e24b5f3d86668622ded415ba499980aae3"
-  },
-  {
-    "file": "lp/assets/usecase-analysis.webp",
-    "sha256": "0b1e1b194d92c096e610f94a438fc5601b51ac91ac05c891a01fcb76167dc531"
-  },
-  {
-    "file": "lp/assets/usecase-contract.webp",
-    "sha256": "835174b42bb7c6370be7f6cba456b7eec4196099b913027c104b95aa8d4372dd"
-  },
-  {
-    "file": "lp/assets/usecase-meeting.webp",
-    "sha256": "8102de77eb5847d98ebf3a74eef4a077993eb584d67ae31794622cd3a8e944db"
-  },
-  {
-    "file": "lp/assets/usecase-writing.webp",
-    "sha256": "2929320b5225a7258184ba34ea631ba43b95700a055249f4f59d071bc7073d3d"
-  },
-  {
-    "file": "lp/conversion.css",
-    "sha256": "8041b049c26f9388e98bac2735732faf02674b536300ec1f615285fc6c297711"
-  },
-  {
-    "file": "lp/index.html",
-    "sha256": "e892502515ffd2e73f4bba12415b05a89e7c9eef06b15363280f5cf4f2ac2d7f"
-  },
-  {
-    "file": "lp/styles.css",
-    "sha256": "66ca787ad1299cf9fc0b3e89a4edf011c450df0eecbf2c7ead7e4ce977bfe91a"
-  },
-  {
-    "file": "privacy.html",
-    "sha256": "0b91454fc2bce4fb03de53fd2ba7f9106e9dda047d41592efa643ba50df66d6f"
-  },
-  {
-    "file": "README.md",
-    "sha256": "dbb80dd4e3a5bf1f8f69c5bed8d6b6448d83077ca214a7385756e4766fd5b060"
-  },
-  {
-    "file": "styles.css",
-    "sha256": "200adc5bd4afe9abdb513da218344f8ba5889c41020ddd4c414f20d919845077"
-  },
-  {
-    "file": "support.html",
-    "sha256": "a15a1e6441d2121b1cb8c146fe6c7fcf2c2c457a500f9c8faf7befc2a4067595"
-  },
-  {
-    "file": "terms.html",
-    "sha256": "a09cc26c3a1987d87bfb8d78cb0c3c7e51974d72bf24d907af0e5d8d58da2856"
-  }
+﻿[
+    {
+        "file":  ".github/workflows/deploy-pages.yml",
+        "sha256":  "239de55846946093c3080fcca26b69faf1b491afb34317e12500b1e2f726ec85"
+    },
+    {
+        "file":  ".nojekyll",
+        "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+        "file":  "app.js",
+        "sha256":  "6fe71920b9f2b2484560fb88ca6e1cea8344f70d32a95f2ed8b1fe2b7989071f"
+    },
+    {
+        "file":  "config.js",
+        "sha256":  "57dd5b47dd7a4c688672b8e31e17bb53190eb3f77e91d337930926e10fdc1697"
+    },
+    {
+        "file":  "data-deletion.html",
+        "sha256":  "13c69927f2603296c4ca8278b407c332119fc87a70065af5a02133178082202f"
+    },
+    {
+        "file":  "index.html",
+        "sha256":  "acf2f73afead47dcad5bab10b823d3020e57e59ad79c5bdc59f96e8beeb06715"
+    },
+    {
+        "file":  "legal.css",
+        "sha256":  "83710fc31805fa77cd687a95107b10cb35f79e97313e69c91c057377eb20b524"
+    },
+    {
+        "file":  "limitations.html",
+        "sha256":  "8d4ea1df7f4a6382a59daa9c3106b2f8a97622da2bf4e36bdfdeb082145e4096"
+    },
+    {
+        "file":  "lp/assets/hero-gateway-v2.webp",
+        "sha256":  "c2242f803d4f90f32b6402d055f675e24b5f3d86668622ded415ba499980aae3"
+    },
+    {
+        "file":  "lp/assets/usecase-analysis.webp",
+        "sha256":  "0b1e1b194d92c096e610f94a438fc5601b51ac91ac05c891a01fcb76167dc531"
+    },
+    {
+        "file":  "lp/assets/usecase-contract.webp",
+        "sha256":  "835174b42bb7c6370be7f6cba456b7eec4196099b913027c104b95aa8d4372dd"
+    },
+    {
+        "file":  "lp/assets/usecase-meeting.webp",
+        "sha256":  "8102de77eb5847d98ebf3a74eef4a077993eb584d67ae31794622cd3a8e944db"
+    },
+    {
+        "file":  "lp/assets/usecase-writing.webp",
+        "sha256":  "2929320b5225a7258184ba34ea631ba43b95700a055249f4f59d071bc7073d3d"
+    },
+    {
+        "file":  "lp/conversion.css",
+        "sha256":  "d5d3d04cff36f961b46ac566eef96c01aefc2d17663cc5d44e756a65bbe3b415"
+    },
+    {
+        "file":  "lp/index.html",
+        "sha256":  "0ebbb7fb731d144e6a6dacaebd99974350aab94aa55d9edad8c4264e9eb2a350"
+    },
+    {
+        "file":  "lp/styles.css",
+        "sha256":  "d404e461f1816ad0194d70d8093194997d4db44cb976d1e0aed5e91ff3717335"
+    },
+    {
+        "file":  "privacy.html",
+        "sha256":  "9de39bbb3e8f20602f66a39cf5da21b8e5ec033bda067bb5d262b8135708b10a"
+    },
+    {
+        "file":  "README.md",
+        "sha256":  "866ecde4b145b9590099977aae39b94a8b10b6d92ab2000dec222e22c1e10c99"
+    },
+    {
+        "file":  "styles.css",
+        "sha256":  "ac8cfb32be325da362bab794f67f3cf54bfc91ff6c0794d17fa981446b8051e9"
+    },
+    {
+        "file":  "support.html",
+        "sha256":  "13869497d9c1eaf138645bc6a8db1a0a051899502b7cd7182506fa75870d00e3"
+    },
+    {
+        "file":  "terms.html",
+        "sha256":  "244709185a48c1423f0d8521b1f782c02296d70a61725fe206c8689fb4983e45"
+    }
 ]

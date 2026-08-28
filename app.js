@@ -537,7 +537,7 @@ function detectDemoEntities(text) {
   const findings = [];
   MASK_DEMO_RULES.forEach(rule => {
     for (const match of text.matchAll(rule.pattern)) {
-      findings.push({ ...rule, original: match[0], start: match.index, end: match.index + match[0].length, selected: true });
+      findings.push({ ...rule, original: match[0], start: match.index, end: match.index + match[0].length, selected: true, reviewed: false });
     }
   });
   return findings.sort((a, b) => a.start - b.start).filter((item, index, all) => !all.slice(0, index).some(other => item.start < other.end && item.end > other.start));
@@ -548,24 +548,40 @@ function replaceDemoEntities(text, findings) {
 }
 
 function setMaskDemoStep(step) {
-  const spans = $$("#maskDemoSteps span");
-  const lines = $$("#maskDemoSteps i");
-  spans.forEach((item, index) => item.classList.toggle("active", index === step - 1));
-  lines.forEach((item, index) => item.classList.toggle("done", index < step - 1));
+  const config = {
+    1: ["現在：サンプルを読込", "ファイル選択待ち", "15%", 15, "サンプル議事録を読み込んでください"],
+    2: ["現在：未確認候補あり", "候補を確認中", "60%", 60, "抽出文字・種別・役割を確認してください"],
+    3: ["現在：文書全体を確認", "安全化結果を作成済み", "100%", 100, "原文とマスク後を比較してください"],
+  }[step];
+  $("#maskProductState").innerHTML = `<i></i>${config[0]}`;
+  $("#maskProductProgressText").textContent = config[1];
+  $("#maskProductProgressValue").textContent = config[2];
+  $("#maskProductProgressFill").style.width = `${config[3]}%`;
+  $("#maskProductNext").textContent = config[4];
 }
 
 function renderMaskDemoCandidates() {
   const host = $("#maskDemoCandidates");
   $("#maskDemoCount").textContent = `${maskDemoCandidates.length}件を検出`;
   if (!maskDemoCandidates.length) {
-    host.className = "demo-empty-state";
+    host.className = "asg-candidate-table demo-empty-state";
     host.innerHTML = "<span>✓</span><strong>保護対象は見つかりませんでした</strong><p>サンプルに戻して再度お試しください。</p>";
     $("#applyMaskDemo").disabled = true;
+    $("#reviewAllMaskDemo").disabled = true;
     return;
   }
-  host.className = "candidate-list";
-  host.innerHTML = maskDemoCandidates.map((item, index) => `<label class="candidate-item"><input type="checkbox" data-mask-demo-index="${index}" ${item.selected ? "checked" : ""}><span><strong>${escapeHtml(item.original)}</strong><small>${escapeHtml(item.type)} · ${escapeHtml(item.role)}として保護</small></span><span>${escapeHtml(item.replacement)}</span></label>`).join("");
-  $("#applyMaskDemo").disabled = !maskDemoCandidates.some(item => item.selected);
+  const typeOptions = ["人物名", "企業名", "案件コード", "電話番号", "メール"];
+  host.className = "asg-candidate-table";
+  host.innerHTML = `<div class="asg-candidate-head"><span>確認</span><span>マスク</span><span>種別</span><span>検出文字列</span><span>判断</span><span>意味・役割</span></div>${maskDemoCandidates.map((item, index) => `<div class="asg-candidate-row">
+    <div><label><input type="checkbox" data-mask-demo-review-index="${index}" ${item.reviewed ? "checked" : ""}>${item.reviewed ? "確認済み" : "未確認"}</label></div>
+    <div><label class="asg-mask-switch"><input type="checkbox" data-mask-demo-index="${index}" ${item.selected ? "checked" : ""}><i></i>${item.selected ? "マスクする" : "マスクしない"}</label></div>
+    <div><select aria-label="${escapeHtml(item.original)}の種別">${typeOptions.map(type => `<option ${type === item.type ? "selected" : ""}>${escapeHtml(type)}</option>`).join("")}</select></div>
+    <div class="asg-candidate-term"><strong>${escapeHtml(item.original)}</strong><small>確度 ${item.type === "人物名" ? "92" : "98"}%</small></div>
+    <div class="asg-candidate-cell"><span class="asg-judgement">${item.reviewed ? "確認済み" : "要確認"}</span><small>${item.selected ? "マスクを維持" : "除外を確認"}</small></div>
+    <div class="asg-role-box"><strong>${escapeHtml(item.role)}</strong><small>${escapeHtml(item.replacement)}として出力</small></div>
+  </div>`).join("")}`;
+  $("#reviewAllMaskDemo").disabled = false;
+  $("#applyMaskDemo").disabled = !maskDemoCandidates.some(item => item.selected) || maskDemoCandidates.some(item => !item.reviewed);
 }
 
 $("#analyzeMaskDemo").addEventListener("click", () => {
@@ -578,15 +594,28 @@ $("#analyzeMaskDemo").addEventListener("click", () => {
 });
 
 $("#maskDemoCandidates").addEventListener("change", event => {
-  const input = event.target.closest("[data-mask-demo-index]");
-  if (!input) return;
-  maskDemoCandidates[Number(input.dataset.maskDemoIndex)].selected = input.checked;
-  $("#applyMaskDemo").disabled = !maskDemoCandidates.some(item => item.selected);
+  const maskInput = event.target.closest("[data-mask-demo-index]");
+  const reviewInput = event.target.closest("[data-mask-demo-review-index]");
+  if (maskInput) maskDemoCandidates[Number(maskInput.dataset.maskDemoIndex)].selected = maskInput.checked;
+  if (reviewInput) maskDemoCandidates[Number(reviewInput.dataset.maskDemoReviewIndex)].reviewed = reviewInput.checked;
+  if (!maskInput && !reviewInput) return;
+  renderMaskDemoCandidates();
+});
+
+$("#reviewAllMaskDemo").addEventListener("click", () => {
+  maskDemoCandidates.forEach(item => { item.reviewed = true; });
+  renderMaskDemoCandidates();
+  $("#maskProductState").innerHTML = "<i></i>現在：候補確認済み";
+  $("#maskProductProgressText").textContent = "最終確認へ進めます";
+  $("#maskProductProgressValue").textContent = "80%";
+  $("#maskProductProgressFill").style.width = "80%";
+  $("#maskProductNext").textContent = "文書を安全化して前後を比較してください";
 });
 
 $("#applyMaskDemo").addEventListener("click", () => {
   const selected = maskDemoCandidates.filter(item => item.selected);
   if (!selected.length) return;
+  $("#maskDemoOriginalPreview").textContent = $("#maskDemoInput").value;
   $("#maskDemoOutput").textContent = replaceDemoEntities($("#maskDemoInput").value, selected);
   $("#maskDemoMapping").innerHTML = selected.map(item => `<span>${escapeHtml(item.original)}<b>→ ${escapeHtml(item.replacement)}</b></span>`).join("");
   $("#maskDemoResult").hidden = false;
@@ -597,9 +626,10 @@ $("#applyMaskDemo").addEventListener("click", () => {
 $("#resetMaskDemo").addEventListener("click", () => {
   $("#maskDemoInput").value = MASK_DEMO_SAMPLE;
   maskDemoCandidates = [];
-  $("#maskDemoCandidates").className = "demo-empty-state";
-  $("#maskDemoCandidates").innerHTML = "<span>⌕</span><strong>左の文書を解析してください</strong><p>検出候補と置換後の意味がここに表示されます。</p>";
+  $("#maskDemoCandidates").className = "asg-candidate-table demo-empty-state";
+  $("#maskDemoCandidates").innerHTML = "<span>＋</span><strong>サンプル議事録を読み込んでください</strong><p>製品版と同じ候補確認画面が表示されます。</p>";
   $("#maskDemoCount").textContent = "解析待ち";
+  $("#reviewAllMaskDemo").disabled = true;
   $("#applyMaskDemo").disabled = true;
   $("#maskDemoResult").hidden = true;
   setMaskDemoStep(1);
@@ -623,17 +653,17 @@ function openGuardIntervention(findings, mode = "text") {
   panel.hidden = false;
   panel.classList.toggle("blocked-file", mode === "file");
   if (mode === "file") {
-    $("#guardInterventionTitle").textContent = "安全確認できないファイルの添付を停止しました";
-    $("#guardFindingList").innerHTML = '<span>顧客一覧.xlsx</span><span>ブラウザからの直接添付</span>';
+    $("#guardInterventionTitle").textContent = "安全確認を完了できないため送信を停止しました";
+    $("#guardFindingList").innerHTML = '<div class="finding"><strong>顧客一覧.xlsx</strong><span>ブラウザからの直接添付</span></div>';
     $("#guardSafeText").value = "ファイルはAI Safe Gateway Windows版で安全化してから添付してください。";
     $("#guardSafeText").readOnly = true;
     $("#guardApplyDemo").textContent = "Windows版デモを開く";
   } else {
-    $("#guardInterventionTitle").textContent = "保護対象を検出したため送信を停止しました";
-    $("#guardFindingList").innerHTML = findings.map(item => `<span>${escapeHtml(item.type)}：${escapeHtml(item.original)}</span>`).join("");
+    $("#guardInterventionTitle").textContent = `${findings.length}件の保護対象を検出しました`;
+    $("#guardFindingList").innerHTML = findings.map(item => `<div class="finding"><strong>${escapeHtml(item.type)}</strong><span>${escapeHtml(item.original)}を${escapeHtml(item.role)}として保護</span></div>`).join("");
     $("#guardSafeText").value = replaceDemoEntities($("#guardDemoInput").value, findings);
     $("#guardSafeText").readOnly = false;
-    $("#guardApplyDemo").textContent = "安全化した文章を反映";
+    $("#guardApplyDemo").textContent = "安全化済み文章を反映";
   }
   updateGuardFlow(2);
   panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -642,7 +672,16 @@ function openGuardIntervention(findings, mode = "text") {
 function completeGuardDemo() {
   const text = $("#guardDemoInput").value.trim();
   if (!text) { showNotice("送信する文章を入力してください。", "error"); return; }
-  $("#guardChat").innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
+  const chat = $("#guardChat");
+  const welcome = chat.querySelector(".guard-welcome");
+  if (welcome) welcome.hidden = true;
+  let bubble = chat.querySelector(".chat-bubble");
+  if (!bubble) {
+    bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    chat.appendChild(bubble);
+  }
+  bubble.textContent = text;
   updateGuardFlow(4);
   showNotice("安全化済み文章だけを送信できる状態になりました。デモのため実送信はしていません。");
 }
@@ -664,7 +703,21 @@ $("#guardApplyDemo").addEventListener("click", () => {
 });
 $$('[data-ai-service]').forEach(button => button.addEventListener("click", () => {
   $$('[data-ai-service]').forEach(item => item.classList.toggle("active", item === button));
-  $("#guardTargetLabel").textContent = button.dataset.aiService;
+  const service = button.dataset.aiService;
+  const worlds = {
+    ChatGPT: { id: "chatgpt", icon: "GPT", heading: "今日はどのようなお手伝いができますか？", welcome: "ChatGPTにメッセージを送信", address: "chatgpt.com / chat" },
+    Gemini: { id: "gemini", icon: "✦", heading: "こんにちは。何から始めましょうか？", welcome: "Geminiに相談する", address: "gemini.google.com / app" },
+    Claude: { id: "claude", icon: "C", heading: "How can I help you today?", welcome: "Claudeと会話を始める", address: "claude.ai / new" },
+    Copilot: { id: "copilot", icon: "∞", heading: "今日は何をしますか？", welcome: "Copilotへ質問する", address: "copilot.microsoft.com / chat" },
+  };
+  const world = worlds[service];
+  $(".browser-mock").dataset.service = world.id;
+  $("#guardTargetLabel").textContent = service;
+  $("#guardBadgeService").textContent = service;
+  $("#guardServiceIcon").textContent = world.icon;
+  $("#guardServiceHeading").textContent = world.heading;
+  if ($("#guardWelcomeTitle")) $("#guardWelcomeTitle").textContent = world.welcome;
+  $(".browser-address").textContent = `🔒 ${world.address}`;
 }));
 $("#logoutButton").addEventListener("click", async () => {
   try { if (!state.demo && state.session) await fetch(`${config.supabaseUrl}/auth/v1/logout`, { method:"POST", headers:sessionHeaders() }); } catch {}
