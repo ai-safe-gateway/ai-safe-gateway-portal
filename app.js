@@ -772,6 +772,13 @@ $("#deviceRows").addEventListener("click", async event => {
 });
 
 async function restoreSession() {
+  const requestedDemo = new URLSearchParams(location.search).get("demo");
+  const demoViews = { overview: "productdemo", windows: "windowsdemo", browser: "browserdemo", roi: "dashboard" };
+  if (requestedDemo && demoViews[requestedDemo]) {
+    enterDemo();
+    showView(demoViews[requestedDemo]);
+    return;
+  }
   $("#environmentBadge").textContent = state.demo ? "DEMO" : "SUPABASE";
   if (state.demo) return;
   try {
