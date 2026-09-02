@@ -14,7 +14,7 @@ const state = {
   usage: [],
   release: null,
   suiteRelease: null,
-  setupRelease: null,
+  browserRelease: null,
   portalBootstrap: null,
   demo: Boolean(config.demoMode || !config.supabaseUrl || !config.supabasePublishableKey),
 };
@@ -75,9 +75,9 @@ const demoData = (() => {
       size_bytes: 49000000, sha256: "5e81dc824ac8b8c281cf9ba9fdf093baf0d05a9703af95acb38b6b5e2d6ef12",
       published_at: "2026-09-02T00:00:00Z", minimum_os: "Windows 10 64-bit", signed: false,
     },
-    setupRelease: {
-      version: "0.42.4", product: "setup", platform: "windows-suite-setup", file_name: "AISafeGatewaySuiteSetup-v0.42.4.exe",
-      size_bytes: 47949312, sha256: "b0a4916fad0c4a2dfa0c4bfdc27b8b0c16bfef6ef126bad67ac7220cddc43d07",
+    browserRelease: {
+      version: "0.7.2", product: "browser", platform: "windows-browser-guard", file_name: "ASGBrowserGuard-v0.7.2.zip",
+      size_bytes: 13069054, sha256: "57070c750fee99bf6a9e3b1084f4f2f732498466101219081e839693b8fb3cff",
       published_at: "2026-09-02T00:00:00Z", minimum_os: "Windows 10 64-bit", signed: false,
     }, usage,
   };
@@ -287,7 +287,7 @@ async function loadPortal() {
   state.usage = bootstrap.usage || [];
   state.release = null;
   state.suiteRelease = null;
-  state.setupRelease = null;
+  state.browserRelease = null;
   renderPortal();
   showView("dashboard");
 }
@@ -481,34 +481,34 @@ function renderDownloads() {
     suiteButton.disabled = false;
   }
 
-  const setup = state.setupRelease;
-  const setupButton = $("#downloadSetupButton");
-  if (!setup) {
-    $("#setupReleaseMeta").innerHTML = "<span>最新版を確認しています…</span>";
-    $("#setupReleaseHash").textContent = "確認中";
-    $("#setupDownloadAvailability").textContent = "かんたんセットアップ版を確認しています。";
-    $("#copySetupReleaseHash").disabled = true;
-    setupButton.disabled = true;
+  const browser = state.browserRelease;
+  const browserButton = $("#downloadBrowserButton");
+  if (!browser) {
+    $("#browserReleaseMeta").innerHTML = "<span>最新版を確認しています…</span>";
+    $("#browserReleaseHash").textContent = "確認中";
+    $("#browserDownloadAvailability").textContent = "Browser Guard版を確認しています。";
+    $("#copyBrowserReleaseHash").disabled = true;
+    browserButton.disabled = true;
   } else {
-    $("#setupReleaseMeta").innerHTML = [
-      `Version ${escapeHtml(setup.version)}`,
-      escapeHtml(formatFileSize(setup.size_bytes)),
-      "ASG + Browser Guard",
-      "1ファイルセットアップ",
+    $("#browserReleaseMeta").innerHTML = [
+      `Version ${escapeHtml(browser.version)}`,
+      escapeHtml(formatFileSize(browser.size_bytes)),
+      "Browser Guardのみ",
+      "manifest入りZIP",
     ].map(value => `<span>${value}</span>`).join("");
-    $("#setupReleaseHash").textContent = setup.sha256;
-    $("#copySetupReleaseHash").disabled = false;
-    $("#setupDownloadAvailability").textContent = `公開日 ${formatDate(setup.published_at)}・別PCへの初回導入はこちらを選んでください。`;
-    setupButton.disabled = false;
+    $("#browserReleaseHash").textContent = browser.sha256;
+    $("#copyBrowserReleaseHash").disabled = false;
+    $("#browserDownloadAvailability").textContent = `公開日 ${formatDate(browser.published_at)}・ASG導入済みPCへブラウザ保護だけを追加します。`;
+    browserButton.disabled = false;
   }
 }
 async function loadReleaseMetadata() {
-  if (state.release && state.suiteRelease && state.setupRelease) { renderDownloads(); return; }
+  if (state.release && state.suiteRelease && state.browserRelease) { renderDownloads(); return; }
   renderDownloads();
-  const [asgResult, suiteResult, setupResult] = await Promise.allSettled([
+  const [asgResult, suiteResult, browserResult] = await Promise.allSettled([
     invoke("release-download", { action: "metadata", product: "asg" }),
     invoke("release-download", { action: "metadata", product: "suite" }),
-    invoke("release-download", { action: "metadata", product: "setup" }),
+    invoke("release-download", { action: "metadata", product: "browser" }),
   ]);
   if (asgResult.status === "fulfilled") {
     state.release = asgResult.value.release;
@@ -516,8 +516,8 @@ async function loadReleaseMetadata() {
   if (suiteResult.status === "fulfilled") {
     state.suiteRelease = suiteResult.value.release;
   }
-  if (setupResult.status === "fulfilled") {
-    state.setupRelease = setupResult.value.release;
+  if (browserResult.status === "fulfilled") {
+    state.browserRelease = browserResult.value.release;
   }
   renderDownloads();
   if (asgResult.status === "rejected") {
@@ -528,9 +528,9 @@ async function loadReleaseMetadata() {
     $("#suiteReleaseMeta").innerHTML = "<span>現在利用できません</span>";
     $("#suiteDownloadAvailability").textContent = friendlyError(suiteResult.reason);
   }
-  if (setupResult.status === "rejected") {
-    $("#setupReleaseMeta").innerHTML = "<span>現在利用できません</span>";
-    $("#setupDownloadAvailability").textContent = friendlyError(setupResult.reason);
+  if (browserResult.status === "rejected") {
+    $("#browserReleaseMeta").innerHTML = "<span>現在利用できません</span>";
+    $("#browserDownloadAvailability").textContent = friendlyError(browserResult.reason);
   }
 }
 async function downloadRelease(product, button, label) {
@@ -543,7 +543,7 @@ async function downloadRelease(product, button, label) {
       return;
     }
     const result = await invoke("release-download", { action: "download", product });
-    if (product === "setup") state.setupRelease = result.release;
+    if (product === "browser") state.browserRelease = result.release;
     else if (product === "suite") state.suiteRelease = result.release;
     else state.release = result.release;
     renderDownloads();
@@ -558,7 +558,7 @@ async function downloadRelease(product, button, label) {
     showNotice(`ダウンロードできません：${friendlyError(error)}`, "error");
   } finally {
     button.innerHTML = original;
-    button.disabled = product === "setup" ? !state.setupRelease : product === "suite" ? !state.suiteRelease : !state.release;
+    button.disabled = product === "browser" ? !state.browserRelease : product === "suite" ? !state.suiteRelease : !state.release;
   }
 }
 $("#downloadWindowsButton").addEventListener("click", async () => {
@@ -567,8 +567,8 @@ $("#downloadWindowsButton").addEventListener("click", async () => {
 $("#downloadSuiteButton").addEventListener("click", async () => {
   await downloadRelease("suite", $("#downloadSuiteButton"), "ASG + Browser Guardセット");
 });
-$("#downloadSetupButton").addEventListener("click", async () => {
-  await downloadRelease("setup", $("#downloadSetupButton"), "ASGかんたんセットアップ");
+$("#downloadBrowserButton").addEventListener("click", async () => {
+  await downloadRelease("browser", $("#downloadBrowserButton"), "ASG Browser Guard");
 });
 $("#copyReleaseHash").addEventListener("click", async () => {
   if (!state.release?.sha256) return;
@@ -580,10 +580,10 @@ $("#copySuiteReleaseHash").addEventListener("click", async () => {
   await navigator.clipboard.writeText(state.suiteRelease.sha256);
   showNotice("セット版のSHA-256をコピーしました。");
 });
-$("#copySetupReleaseHash").addEventListener("click", async () => {
-  if (!state.setupRelease?.sha256) return;
-  await navigator.clipboard.writeText(state.setupRelease.sha256);
-  showNotice("セットアップEXEのSHA-256をコピーしました。");
+$("#copyBrowserReleaseHash").addEventListener("click", async () => {
+  if (!state.browserRelease?.sha256) return;
+  await navigator.clipboard.writeText(state.browserRelease.sha256);
+  showNotice("Browser Guard ZIPのSHA-256をコピーしました。");
 });
 
 function renderLicenses() {

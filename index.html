@@ -213,9 +213,9 @@
               <p class="panel-kicker">AI SAFE GATEWAY FOR WINDOWS</p>
               <h3>使い方に合わせて、最新版を選ぶ</h3>
               <p>ASG単体版と、Browser Guardをまとめた推奨セットを用意しています。原文・辞書・対応表はPC内で処理されます。</p>
-              <div id="setupReleaseMeta" class="release-meta"><span>かんたんセットアップ版を確認しています…</span></div>
-              <button id="downloadSetupButton" class="download-primary" type="button" disabled><span class="download-button-icon">⇩</span><span><small>推奨・別PCへ初めて導入する方</small><strong>まとめてセットアップ（EXE）</strong></span><b>→</b></button>
-              <p id="setupDownloadAvailability" class="download-availability">公開ファイルを確認しています。</p>
+              <div id="browserReleaseMeta" class="release-meta"><span>Browser Guard版を確認しています…</span></div>
+              <button id="downloadBrowserButton" class="download-primary" type="button" disabled><span class="download-button-icon">⇩</span><span><small>ASG導入済み・ブラウザ保護を追加する方</small><strong>Browser Guard（manifest入りZIP）</strong></span><b>→</b></button>
+              <p id="browserDownloadAvailability" class="download-availability">公開ファイルを確認しています。</p>
               <div id="suiteReleaseMeta" class="release-meta"><span>セット版を確認しています…</span></div>
               <button id="downloadSuiteButton" class="download-primary secondary-download" type="button" disabled><span class="download-button-icon">⇩</span><span><small>拡張フォルダを直接選んで導入する方</small><strong>ASG＋Browser Guardセット（manifest入りZIP）</strong></span><b>→</b></button>
               <p id="suiteDownloadAvailability" class="download-availability">公開ファイルを確認しています。</p>
@@ -226,7 +226,7 @@
           </section>
           <div class="download-info-grid">
             <article class="panel download-steps"><div class="panel-head"><div><p class="panel-kicker">START GUIDE</p><h3>利用開始まで3ステップ</h3></div></div><ol><li><b>01</b><div><strong>EXEをダウンロード</strong><span>この画面から最新版を取得</span></div></li><li><b>02</b><div><strong>評価ライセンスを読み込む</strong><span>企業登録時に保存した.asglicenseを使用</span></div></li><li><b>03</b><div><strong>自社文書で確認</strong><span>外部AIへ渡す前に必ず最終確認</span></div></li></ol></article>
-            <article class="panel download-security"><div class="panel-head"><div><p class="panel-kicker">SECURITY CHECK</p><h3>取得したファイルを確認</h3></div></div><dl><dt>対応OS</dt><dd id="releaseOs">Windows 10 / 11 64-bit</dd><dt>コード署名</dt><dd id="releaseSignature">確認中</dd><dt>セットアップEXE</dt><dd><code id="setupReleaseHash">確認中</code><button id="copySetupReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd><dt>ASG単体</dt><dd><code id="releaseHash">確認中</code><button id="copyReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd><dt>セットZIP</dt><dd><code id="suiteReleaseHash">確認中</code><button id="copySuiteReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd></dl><p class="download-warning">署名がない評価版ではWindows SmartScreenが表示される場合があります。ファイル名とSHA-256がこの画面と一致することを確認してください。</p></article>
+            <article class="panel download-security"><div class="panel-head"><div><p class="panel-kicker">SECURITY CHECK</p><h3>取得したファイルを確認</h3></div></div><dl><dt>対応OS</dt><dd id="releaseOs">Windows 10 / 11 64-bit</dd><dt>コード署名</dt><dd id="releaseSignature">確認中</dd><dt>Browser Guard</dt><dd><code id="browserReleaseHash">確認中</code><button id="copyBrowserReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd><dt>ASG単体</dt><dd><code id="releaseHash">確認中</code><button id="copyReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd><dt>セットZIP</dt><dd><code id="suiteReleaseHash">確認中</code><button id="copySuiteReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd></dl><p class="download-warning">署名がない評価版ではWindows SmartScreenが表示される場合があります。ファイル名とSHA-256がこの画面と一致することを確認してください。</p></article>
           </div>
         </section>
 
@@ -263,6 +263,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.7.6"></script>
+  <script type="module" src="app.js?v=0.7.7"></script>
 </body>
 </html>
