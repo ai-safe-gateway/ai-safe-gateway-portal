@@ -101,6 +101,10 @@ function formatDate(value) {
   if (!value) return "—";
   return new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
 }
+function licenseState(item) {
+  if (["cancelled", "expired"].includes(item.status) || new Date(item.expires_at) <= new Date()) return "expired";
+  return item.status;
+}
 function formatNumber(value) { return new Intl.NumberFormat("ja-JP").format(Number(value || 0)); }
 function sumCounts(rows) {
   return rows.reduce((total, row) => {
@@ -482,18 +486,23 @@ $("#copyReleaseHash").addEventListener("click", async () => {
 });
 
 function renderLicenses() {
-  const totalSeats = state.licenses.filter(item => item.status === "active").reduce((sum, item) => sum + Number(item.seats || 0), 0);
+  const totalSeats = state.licenses.filter(item => licenseState(item) === "active").reduce((sum, item) => sum + Number(item.seats || 0), 0);
   const activeDevices = state.devices.filter(item => item.active).length;
-  const activeExpiry = state.licenses.filter(item => item.status === "active").map(item => new Date(item.expires_at)).sort((a,b)=>a-b)[0];
+  const activeExpiry = state.licenses.filter(item => licenseState(item) === "active").map(item => new Date(item.expires_at)).sort((a,b)=>a-b)[0];
   const trialDays = activeExpiry ? Math.max(0, Math.ceil((activeExpiry - new Date()) / 86400000)) : 0;
   const canManage = ["owner","admin"].includes(state.member?.role);
-  $("#licenseSummary").innerHTML = [["有効ライセンス",state.licenses.filter(item=>item.status==="active").length],["端末上限",totalSeats],["利用中",activeDevices],[state.company.status === "trial" ? "評価版 残り" : "利用可能",state.company.status === "trial" ? `${trialDays}日` : Math.max(0,totalSeats-activeDevices)]].map(([label,value])=>`<div class="summary-cell"><small>${label}</small><strong>${typeof value === "number" ? formatNumber(value) : escapeHtml(value)}</strong></div>`).join("");
+  $("#licenseSummary").innerHTML = [["有効ライセンス",state.licenses.filter(item=>licenseState(item)==="active").length],["端末上限",totalSeats],["利用中",activeDevices],[state.company.status === "trial" ? "評価版 残り" : "利用可能",state.company.status === "trial" ? `${trialDays}日` : Math.max(0,totalSeats-activeDevices)]].map(([label,value])=>`<div class="summary-cell"><small>${label}</small><strong>${typeof value === "number" ? formatNumber(value) : escapeHtml(value)}</strong></div>`).join("");
   $("#licenseRows").innerHTML = state.licenses.length ? state.licenses.map(item => {
     const used = state.devices.filter(device => device.license_id === item.id && device.active).length;
-    const active = item.status === "active";
+    const effectiveState = licenseState(item);
+    const active = effectiveState === "active";
     const action = active ? "suspend" : "activate";
     const actionLabel = active ? "一時停止" : "再開";
-    return `<tr><td><strong>${escapeHtml(item.label)}</strong><br><code>${escapeHtml(item.id.slice(0,8))}…</code></td><td>${escapeHtml(item.edition)}</td><td>${used} / ${item.seats}</td><td>${formatDate(item.expires_at)}</td><td><span class="status-badge ${active ? "" : "danger"}">${active ? "有効" : "停止"}</span></td><td>${canManage && !["expired","cancelled"].includes(item.status) ? `<button class="row-action ${active ? "danger-outline" : ""}" type="button" data-license-id="${escapeHtml(item.id)}" data-license-action="${action}">${actionLabel}</button>` : "—"}</td></tr>`;
+    const statusLabel = effectiveState === "expired" ? "期限切れ" : active ? "有効" : "停止";
+    const statusClass = effectiveState === "expired" ? "expired" : active ? "" : "danger";
+    const stateButton = effectiveState === "expired" ? "" : `<button class="row-action ${active ? "danger-outline" : ""}" type="button" data-license-id="${escapeHtml(item.id)}" data-license-action="${action}">${actionLabel}</button>`;
+    const operations = canManage ? `<div class="license-actions"><button class="row-action renew" type="button" data-license-renew="${escapeHtml(item.id)}">更新</button>${stateButton}</div>` : "—";
+    return `<tr><td><strong>${escapeHtml(item.label)}</strong><br><code>${escapeHtml(item.id.slice(0,8))}…</code></td><td>${escapeHtml(item.edition)}</td><td>${used} / ${item.seats}</td><td>${formatDate(item.expires_at)}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td><td>${operations}</td></tr>`;
   }).join("") : `<tr><td colspan="6">ライセンスはありません。</td></tr>`;
   $("#deviceRows").innerHTML = state.devices.length ? state.devices.map(item => {
     const action = item.active ? "deactivate" : "reactivate";
@@ -744,6 +753,15 @@ $("#licenseForm").addEventListener("submit", async event => {
 });
 
 $("#licenseRows").addEventListener("click", async event => {
+  const renewButton = event.target.closest("[data-license-renew]");
+  if (renewButton && !state.demo) {
+    const license = state.licenses.find(item => item.id === renewButton.dataset.licenseRenew);
+    if (!license) return;
+    $("#renewLicenseId").value = license.id;
+    $("#renewLicenseLabel").textContent = `${license.label}（現在の期限：${formatDate(license.expires_at)}）`;
+    $("#licenseRenewDialog").showModal();
+    return;
+  }
   const button = event.target.closest("[data-license-action]");
   if (!button || state.demo) return;
   const suspend = button.dataset.licenseAction === "suspend";
@@ -755,6 +773,20 @@ $("#licenseRows").addEventListener("click", async event => {
     showNotice(suspend ? "ライセンスを一時停止しました。" : "ライセンスを再開しました。");
   } catch (error) { showNotice(`変更できません：${friendlyError(error)}`, "error"); }
   finally { button.disabled = false; }
+});
+
+$("#licenseRenewForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const submit = event.submitter;
+  if (submit) submit.disabled = true;
+  try {
+    const result = await invoke("admin-license-action", { license_id: $("#renewLicenseId").value, action: "renew", valid_days: Number($("#renewLicenseDays").value) });
+    downloadLicenseEnvelope(result.license_envelope, result.license_id);
+    $("#licenseRenewDialog").close();
+    await loadPortal();
+    showNotice(`ライセンスを${result.valid_days}日更新し、新しいファイルを保存しました。`);
+  } catch (error) { showNotice(`更新できません：${friendlyError(error)}`, "error"); }
+  finally { if (submit) submit.disabled = false; }
 });
 
 $("#deviceRows").addEventListener("click", async event => {

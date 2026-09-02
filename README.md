@@ -1,4 +1,4 @@
-# AI Safe Gateway 企業管理ポータル
+﻿# AI Safe Gateway 企業管理ポータル
 
 AI Safe Gatewayの企業管理者向けポータルです。GitHub Pagesで静的画面をHTTPS配信し、
 認証・企業情報・ライセンス・匿名利用統計はSupabaseへ接続します。

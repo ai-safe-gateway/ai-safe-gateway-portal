@@ -1,4 +1,4 @@
-name: Deploy AI Safe Gateway Portal
+﻿name: Deploy AI Safe Gateway Portal
 
 on:
   push:

@@ -225,7 +225,7 @@
         </section>
 
         <section id="licensesView" class="view">
-          <div class="page-heading"><div><p class="eyebrow dark">LICENSE CONTROL</p><h2>ライセンス・端末</h2><p>契約ライセンスと認証されたPCを確認します。</p></div><button id="openLicenseModal" class="primary-small" type="button">ライセンスを発行</button></div>
+          <div class="page-heading"><div><p class="eyebrow dark">LICENSE CONTROL</p><h2>ライセンス・端末</h2><p>期限切れの判定、ライセンス更新、認証されたPCをまとめて管理します。</p></div><button id="openLicenseModal" class="primary-small" type="button">新規ライセンスを発行</button></div>
           <div id="licenseSummary" class="summary-strip"></div>
           <article class="panel table-panel"><div class="panel-head"><div><h3>ライセンス一覧</h3><p>停止すると次回認証後に書込み機能が無効になります。</p></div></div><div class="table-scroll"><table><thead><tr><th>名称</th><th>プラン</th><th>端末</th><th>有効期限</th><th>状態</th><th>操作</th></tr></thead><tbody id="licenseRows"></tbody></table></div></article>
           <article class="panel table-panel"><div class="panel-head"><div><h3>認証端末</h3><p>PC名や利用文書は収集しません。端末IDは一方向ハッシュです。</p></div></div><div class="table-scroll"><table><thead><tr><th>端末ID</th><th>アプリ</th><th>最終認証</th><th>状態</th><th>操作</th></tr></thead><tbody id="deviceRows"></tbody></table></div></article>
@@ -250,11 +250,13 @@
 
   <dialog id="licenseDialog" class="modal"><form id="licenseForm"><div class="modal-head"><div><h2>試用ライセンスを発行</h2><p>発行後、署名済みライセンスファイルを保存します。</p></div><button class="icon-button" type="button" data-close="licenseDialog" aria-label="閉じる">×</button></div><div class="form-grid"><label>ライセンス名<input id="licenseLabel" required maxlength="80" value="PoC評価用"></label><label>端末上限<input id="licenseSeats" type="number" min="1" max="500" value="10" required></label><label>プラン<select id="licenseEdition"><option>Business</option><option>Professional</option><option>Enterprise</option></select></label><label>有効日数<input id="licenseDays" type="number" min="1" max="1095" value="30" required></label></div><p class="modal-note">初回ファイルのオフライン期限は1日です。PCでオンライン更新すると30日に延長され、端末へ紐づきます。</p><div class="modal-actions"><button class="secondary-button" type="button" data-close="licenseDialog">キャンセル</button><button class="primary-small" type="submit">発行して保存</button></div></form></dialog>
 
+  <dialog id="licenseRenewDialog" class="modal"><form id="licenseRenewForm"><input id="renewLicenseId" type="hidden"><div class="modal-head"><div><h2>ライセンスを更新</h2><p id="renewLicenseLabel">有効期限を延長し、新しいライセンスファイルを保存します。</p></div><button class="icon-button" type="button" data-close="licenseRenewDialog" aria-label="閉じる">×</button></div><div class="form-grid single-field"><label>延長日数<input id="renewLicenseDays" type="number" min="1" max="1095" value="30" required><small>期限切れの場合は本日から、利用中の場合は現在の有効期限から延長します。</small></label></div><p class="modal-note">更新後に保存される.asglicenseをWindowsアプリの「ライセンス・更新」で読み込んでください。</p><div class="modal-actions"><button class="secondary-button" type="button" data-close="licenseRenewDialog">キャンセル</button><button class="primary-small" type="submit">更新して保存</button></div></form></dialog>
+
   <dialog id="passwordDialog" class="modal"><form id="passwordRequestForm"><div class="modal-head"><div><h2>パスワードを再設定</h2><p>登録メールアドレスへ再設定リンクを送ります。</p></div><button class="icon-button" type="button" data-close="passwordDialog" aria-label="閉じる">×</button></div><label>メールアドレス<input id="passwordEmail" type="email" required placeholder="admin@example.jp"></label><div class="modal-actions"><button class="secondary-button" type="button" data-close="passwordDialog">キャンセル</button><button class="primary-small" type="submit">再設定メールを送信</button></div></form></dialog>
 
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.7.1"></script>
+  <script type="module" src="app.js?v=0.7.2"></script>
 </body>
 </html>
