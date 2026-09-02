@@ -9,7 +9,7 @@
   },
   {
     "file": "app.js",
-    "sha256": "40040b98438574c4294152fcd7c0794361bc21e66889c5b807a0fa755b586b60"
+    "sha256": "153de682043ab02992c5287ff0a6b6843222c0e961ae8efa62d79c6b11670de4"
   },
   {
     "file": "config.js",
@@ -21,7 +21,7 @@
   },
   {
     "file": "index.html",
-    "sha256": "955592f9b6e8f311408043ab8e89f6921726610f7f8bc1bc4583e62cfe8e7d32"
+    "sha256": "fadb451cb841d529040e549de29f1b12c219af32332e16c4a9ffd04522c58aa1"
   },
   {
     "file": "legal.css",
