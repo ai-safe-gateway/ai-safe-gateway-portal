@@ -282,6 +282,12 @@ function renderPortal() {
   $("#companyNameHeader").textContent = state.company.name; $("#companyCodeHeader").textContent = `企業ID ${state.company.company_code}`;
   $("#userAvatar").textContent = (state.member.display_name || state.user.email || "管").slice(0, 1);
   $("#openLicenseModal").hidden = !["owner","admin"].includes(state.member?.role);
+  const trial = state.company.status === "trial";
+  $("#licenseEdition").disabled = trial;
+  if (trial) $("#licenseEdition").value = "Business";
+  $("#licenseSeats").max = trial ? "25" : "500";
+  $("#licenseDays").max = trial ? "60" : "1095";
+  $("#renewLicenseDays").max = trial ? "60" : "1095";
   renderDashboard(); renderLicenses(); renderMyPage(); renderDownloads();
 }
 
@@ -487,7 +493,8 @@ $("#copyReleaseHash").addEventListener("click", async () => {
 
 function renderLicenses() {
   const totalSeats = state.licenses.filter(item => licenseState(item) === "active").reduce((sum, item) => sum + Number(item.seats || 0), 0);
-  const activeDevices = state.devices.filter(item => item.active).length;
+  const validLicenseIds = new Set(state.licenses.filter(item => licenseState(item) === "active").map(item => item.id));
+  const activeDevices = state.devices.filter(item => item.active && validLicenseIds.has(item.license_id)).length;
   const activeExpiry = state.licenses.filter(item => licenseState(item) === "active").map(item => new Date(item.expires_at)).sort((a,b)=>a-b)[0];
   const trialDays = activeExpiry ? Math.max(0, Math.ceil((activeExpiry - new Date()) / 86400000)) : 0;
   const canManage = ["owner","admin"].includes(state.member?.role);
@@ -506,7 +513,9 @@ function renderLicenses() {
   }).join("") : `<tr><td colspan="6">ライセンスはありません。</td></tr>`;
   $("#deviceRows").innerHTML = state.devices.length ? state.devices.map(item => {
     const action = item.active ? "deactivate" : "reactivate";
-    return `<tr><td><code>${escapeHtml(item.device_hash.slice(0,18))}…</code><br><small>初回 ${formatDate(item.first_seen_at)}</small></td><td>${escapeHtml(item.app_version || "—")}</td><td>${formatDate(item.last_seen_at)}</td><td><span class="status-badge ${item.active ? "" : "danger"}">${item.active ? "利用中" : "解除済み"}</span></td><td>${canManage ? `<button class="row-action ${item.active ? "danger-outline" : ""}" type="button" data-device-id="${escapeHtml(item.id)}" data-device-action="${action}">${item.active ? "端末を解除" : "再登録"}</button>` : "—"}</td></tr>`;
+    const usable = item.active && validLicenseIds.has(item.license_id);
+    const deviceStatus = !item.active ? "解除済み" : usable ? "利用中" : "ライセンス切れ";
+    return `<tr><td><code>${escapeHtml(item.device_hash.slice(0,18))}…</code><br><small>初回 ${formatDate(item.first_seen_at)}</small></td><td>${escapeHtml(item.app_version || "—")}</td><td>${formatDate(item.last_seen_at)}</td><td><span class="status-badge ${usable ? "" : "danger"}">${deviceStatus}</span></td><td>${canManage ? `<button class="row-action ${item.active ? "danger-outline" : ""}" type="button" data-device-id="${escapeHtml(item.id)}" data-device-action="${action}">${item.active ? "端末を解除" : "再登録"}</button>` : "—"}</td></tr>`;
   }).join("") : `<tr><td colspan="5">認証端末はありません。</td></tr>`;
 }
 function renderMyPage() {
@@ -754,7 +763,7 @@ $("#licenseForm").addEventListener("submit", async event => {
 
 $("#licenseRows").addEventListener("click", async event => {
   const renewButton = event.target.closest("[data-license-renew]");
-  if (renewButton && !state.demo) {
+  if (renewButton) {
     const license = state.licenses.find(item => item.id === renewButton.dataset.licenseRenew);
     if (!license) return;
     $("#renewLicenseId").value = license.id;
@@ -780,6 +789,7 @@ $("#licenseRenewForm").addEventListener("submit", async event => {
   const submit = event.submitter;
   if (submit) submit.disabled = true;
   try {
+    if (state.demo) { showNotice("デモモードではライセンスを更新しません。ログイン後に利用できます。", "error"); return; }
     const result = await invoke("admin-license-action", { license_id: $("#renewLicenseId").value, action: "renew", valid_days: Number($("#renewLicenseDays").value) });
     downloadLicenseEnvelope(result.license_envelope, result.license_id);
     $("#licenseRenewDialog").close();
