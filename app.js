@@ -477,7 +477,7 @@ function renderDownloads() {
     ].map(value => `<span>${value}</span>`).join("");
     $("#suiteReleaseHash").textContent = suite.sha256;
     $("#copySuiteReleaseHash").disabled = false;
-    $("#suiteDownloadAvailability").textContent = `公開日 ${formatDate(suite.published_at)}・初めての方はこちらを選んでください。`;
+    $("#suiteDownloadAvailability").textContent = `公開日 ${formatDate(suite.published_at)}・展開後、manifest.json入りフォルダを直接選択できます。`;
     suiteButton.disabled = false;
   }
 
