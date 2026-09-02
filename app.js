@@ -13,6 +13,7 @@ const state = {
   devices: [],
   usage: [],
   release: null,
+  suiteRelease: null,
   portalBootstrap: null,
   demo: Boolean(config.demoMode || !config.supabaseUrl || !config.supabasePublishableKey),
 };
@@ -67,6 +68,11 @@ const demoData = (() => {
       version: "0.38.0", platform: "windows-x64", file_name: "AISafeGatewayPoC-Portable-v0.38.0.exe",
       size_bytes: 46460293, sha256: "a4e1dc824ac8b8c281cf9ba9fdf093baf0d05a9703af95acb38b6b5e2d6ef120",
       published_at: "2026-07-31T00:00:00Z", minimum_os: "Windows 10 64-bit", signed: false,
+    },
+    suiteRelease: {
+      version: "0.42.2", product: "suite", platform: "windows-suite", file_name: "AISafeGatewaySuite-v0.42.2.zip",
+      size_bytes: 49000000, sha256: "5e81dc824ac8b8c281cf9ba9fdf093baf0d05a9703af95acb38b6b5e2d6ef12",
+      published_at: "2026-09-02T00:00:00Z", minimum_os: "Windows 10 64-bit", signed: false,
     }, usage,
   };
 })();
@@ -274,6 +280,7 @@ async function loadPortal() {
   state.devices = bootstrap.devices || [];
   state.usage = bootstrap.usage || [];
   state.release = null;
+  state.suiteRelease = null;
   renderPortal();
   showView("dashboard");
 }
@@ -431,35 +438,66 @@ function renderDownloads() {
     $("#downloadAvailability").textContent = "公開ファイルを確認しています。";
     $("#copyReleaseHash").disabled = true;
     button.disabled = true;
-    return;
+  } else {
+    $("#releaseMeta").innerHTML = [
+      `Version ${escapeHtml(release.version)}`,
+      escapeHtml(formatFileSize(release.size_bytes)),
+      escapeHtml(release.platform === "windows-x64" ? "Windows 64-bit" : release.platform),
+      "ポータブル版",
+    ].map(value => `<span>${value}</span>`).join("");
+    $("#releaseOs").textContent = release.minimum_os || "Windows 10 / 11 64-bit";
+    $("#releaseSignature").textContent = release.signed ? "コード署名済み" : "評価版・未署名";
+    $("#releaseHash").textContent = release.sha256;
+    $("#copyReleaseHash").disabled = false;
+    $("#downloadAvailability").textContent = `公開日 ${formatDate(release.published_at)}・URLは発行後3分間だけ有効です。`;
+    button.disabled = false;
   }
-  $("#releaseMeta").innerHTML = [
-    `Version ${escapeHtml(release.version)}`,
-    escapeHtml(formatFileSize(release.size_bytes)),
-    escapeHtml(release.platform === "windows-x64" ? "Windows 64-bit" : release.platform),
-    "ポータブル版",
-  ].map(value => `<span>${value}</span>`).join("");
-  $("#releaseOs").textContent = release.minimum_os || "Windows 10 / 11 64-bit";
-  $("#releaseSignature").textContent = release.signed ? "コード署名済み" : "評価版・未署名";
-  $("#releaseHash").textContent = release.sha256;
-  $("#copyReleaseHash").disabled = false;
-  $("#downloadAvailability").textContent = `公開日 ${formatDate(release.published_at)}・URLは発行後3分間だけ有効です。`;
-  button.disabled = false;
+
+  const suite = state.suiteRelease;
+  const suiteButton = $("#downloadSuiteButton");
+  if (!suite) {
+    $("#suiteReleaseMeta").innerHTML = "<span>最新版を確認しています…</span>";
+    $("#suiteReleaseHash").textContent = "確認中";
+    $("#suiteDownloadAvailability").textContent = "セット版を確認しています。";
+    $("#copySuiteReleaseHash").disabled = true;
+    suiteButton.disabled = true;
+  } else {
+    $("#suiteReleaseMeta").innerHTML = [
+      `Version ${escapeHtml(suite.version)}`,
+      escapeHtml(formatFileSize(suite.size_bytes)),
+      "ASG + Browser Guard",
+      "ZIPセット",
+    ].map(value => `<span>${value}</span>`).join("");
+    $("#suiteReleaseHash").textContent = suite.sha256;
+    $("#copySuiteReleaseHash").disabled = false;
+    $("#suiteDownloadAvailability").textContent = `公開日 ${formatDate(suite.published_at)}・初めての方はこちらを選んでください。`;
+    suiteButton.disabled = false;
+  }
 }
 async function loadReleaseMetadata() {
-  if (state.release) { renderDownloads(); return; }
+  if (state.release && state.suiteRelease) { renderDownloads(); return; }
   renderDownloads();
-  try {
-    const result = await invoke("release-download", { action: "metadata" });
-    state.release = result.release;
-    renderDownloads();
-  } catch (error) {
-    $("#downloadAvailability").textContent = friendlyError(error);
+  const [asgResult, suiteResult] = await Promise.allSettled([
+    invoke("release-download", { action: "metadata", product: "asg" }),
+    invoke("release-download", { action: "metadata", product: "suite" }),
+  ]);
+  if (asgResult.status === "fulfilled") {
+    state.release = asgResult.value.release;
+  }
+  if (suiteResult.status === "fulfilled") {
+    state.suiteRelease = suiteResult.value.release;
+  }
+  renderDownloads();
+  if (asgResult.status === "rejected") {
     $("#releaseMeta").innerHTML = "<span>現在利用できません</span>";
+    $("#downloadAvailability").textContent = friendlyError(asgResult.reason);
+  }
+  if (suiteResult.status === "rejected") {
+    $("#suiteReleaseMeta").innerHTML = "<span>現在利用できません</span>";
+    $("#suiteDownloadAvailability").textContent = friendlyError(suiteResult.reason);
   }
 }
-$("#downloadWindowsButton").addEventListener("click", async () => {
-  const button = $("#downloadWindowsButton");
+async function downloadRelease(product, button, label) {
   const original = button.innerHTML;
   button.disabled = true;
   button.innerHTML = '<span class="download-button-icon">…</span><span><small>安全なURLを発行中</small><strong>ダウンロードを準備しています</strong></span><b>→</b>';
@@ -468,8 +506,9 @@ $("#downloadWindowsButton").addEventListener("click", async () => {
       showNotice("デモ画面ではEXEをダウンロードしません。企業登録後に利用できます。", "error");
       return;
     }
-    const result = await invoke("release-download", { action: "download" });
-    state.release = result.release;
+    const result = await invoke("release-download", { action: "download", product });
+    if (product === "suite") state.suiteRelease = result.release;
+    else state.release = result.release;
     renderDownloads();
     const link = document.createElement("a");
     link.href = result.signed_url;
@@ -477,18 +516,29 @@ $("#downloadWindowsButton").addEventListener("click", async () => {
     document.body.appendChild(link);
     link.click();
     link.remove();
-    showNotice(`Windows版 v${result.release.version} のダウンロードを開始しました。`);
+    showNotice(`${label} v${result.release.version} のダウンロードを開始しました。`);
   } catch (error) {
     showNotice(`ダウンロードできません：${friendlyError(error)}`, "error");
   } finally {
     button.innerHTML = original;
-    button.disabled = !state.release;
+    button.disabled = product === "suite" ? !state.suiteRelease : !state.release;
   }
+}
+$("#downloadWindowsButton").addEventListener("click", async () => {
+  await downloadRelease("asg", $("#downloadWindowsButton"), "ASG Windows版");
+});
+$("#downloadSuiteButton").addEventListener("click", async () => {
+  await downloadRelease("suite", $("#downloadSuiteButton"), "ASG + Browser Guardセット");
 });
 $("#copyReleaseHash").addEventListener("click", async () => {
   if (!state.release?.sha256) return;
   await navigator.clipboard.writeText(state.release.sha256);
   showNotice("SHA-256をコピーしました。");
+});
+$("#copySuiteReleaseHash").addEventListener("click", async () => {
+  if (!state.suiteRelease?.sha256) return;
+  await navigator.clipboard.writeText(state.suiteRelease.sha256);
+  showNotice("セット版のSHA-256をコピーしました。");
 });
 
 function renderLicenses() {

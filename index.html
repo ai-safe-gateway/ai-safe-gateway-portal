@@ -211,16 +211,19 @@
             </div>
             <div class="download-copy">
               <p class="panel-kicker">AI SAFE GATEWAY FOR WINDOWS</p>
-              <h3>このPCで、安全化を始める</h3>
-              <p>インストール不要のポータブル版です。原文・辞書・対応表はPC内で処理され、生成AIへ自動送信されません。</p>
+              <h3>使い方に合わせて、最新版を選ぶ</h3>
+              <p>ASG単体版と、Browser Guardをまとめた推奨セットを用意しています。原文・辞書・対応表はPC内で処理されます。</p>
+              <div id="suiteReleaseMeta" class="release-meta"><span>セット版を確認しています…</span></div>
+              <button id="downloadSuiteButton" class="download-primary" type="button" disabled><span class="download-button-icon">⇩</span><span><small>推奨・初めて導入する方</small><strong>ASG＋Browser Guardセット（ZIP）</strong></span><b>→</b></button>
+              <p id="suiteDownloadAvailability" class="download-availability">公開ファイルを確認しています。</p>
               <div id="releaseMeta" class="release-meta"><span>最新版を確認しています…</span></div>
-              <button id="downloadWindowsButton" class="download-primary" type="button" disabled><span class="download-button-icon">↓</span><span><small>登録済み企業向け</small><strong>Windows版をダウンロード</strong></span><b>→</b></button>
+              <button id="downloadWindowsButton" class="download-primary secondary-download" type="button" disabled><span class="download-button-icon">↓</span><span><small>ASGだけ更新する方</small><strong>ASG Windows版のみ（EXE）</strong></span><b>→</b></button>
               <p id="downloadAvailability" class="download-availability">公開ファイルを確認しています。</p>
             </div>
           </section>
           <div class="download-info-grid">
             <article class="panel download-steps"><div class="panel-head"><div><p class="panel-kicker">START GUIDE</p><h3>利用開始まで3ステップ</h3></div></div><ol><li><b>01</b><div><strong>EXEをダウンロード</strong><span>この画面から最新版を取得</span></div></li><li><b>02</b><div><strong>評価ライセンスを読み込む</strong><span>企業登録時に保存した.asglicenseを使用</span></div></li><li><b>03</b><div><strong>自社文書で確認</strong><span>外部AIへ渡す前に必ず最終確認</span></div></li></ol></article>
-            <article class="panel download-security"><div class="panel-head"><div><p class="panel-kicker">SECURITY CHECK</p><h3>取得したファイルを確認</h3></div></div><dl><dt>対応OS</dt><dd id="releaseOs">Windows 10 / 11 64-bit</dd><dt>コード署名</dt><dd id="releaseSignature">確認中</dd><dt>SHA-256</dt><dd><code id="releaseHash">確認中</code><button id="copyReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd></dl><p class="download-warning">署名がない評価版ではWindows SmartScreenが表示される場合があります。ファイル名とSHA-256がこの画面と一致することを確認してください。</p></article>
+            <article class="panel download-security"><div class="panel-head"><div><p class="panel-kicker">SECURITY CHECK</p><h3>取得したファイルを確認</h3></div></div><dl><dt>対応OS</dt><dd id="releaseOs">Windows 10 / 11 64-bit</dd><dt>コード署名</dt><dd id="releaseSignature">確認中</dd><dt>ASG単体</dt><dd><code id="releaseHash">確認中</code><button id="copyReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd><dt>セットZIP</dt><dd><code id="suiteReleaseHash">確認中</code><button id="copySuiteReleaseHash" class="copy-hash-button" type="button" disabled>コピー</button></dd></dl><p class="download-warning">署名がない評価版ではWindows SmartScreenが表示される場合があります。ファイル名とSHA-256がこの画面と一致することを確認してください。</p></article>
           </div>
         </section>
 
@@ -257,6 +260,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.7.3"></script>
+  <script type="module" src="app.js?v=0.7.4"></script>
 </body>
 </html>
