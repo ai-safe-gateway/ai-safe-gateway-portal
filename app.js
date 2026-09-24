@@ -621,11 +621,63 @@ function renderMyPage() {
 }
 
 function showView(name) {
+  if (name === "licenses") refreshPolicyDelivery();
   $$(".view").forEach(view => view.classList.toggle("active", view.id === `${name}View`));
   $$(".nav-button").forEach(button => button.classList.toggle("active", button.dataset.view === name));
   $(".sidebar").classList.remove("open");
   if (name === "downloads") loadReleaseMetadata();
 }
+async function policyAdmin(action, extra = {}) {
+  if (state.demo) throw new Error("デモでは配布しません。企業管理者でログインしてください。");
+  if (!["owner", "admin"].includes(state.member?.role)) throw new Error("企業管理者のみ操作できます。");
+  return invoke("policy-admin", {company_id: state.company.id, action, ...extra});
+}
+async function refreshPolicyDelivery() {
+  try {
+    const result = await policyAdmin("status");
+    $("#policyChannelStatus").textContent = result.channel?.enabled ? `配布中：リリース ${result.channel.release_id}（端末からの自己報告。最終報告時点の状態）` : "配布停止中／未公開";
+    const container = $("#policyDeviceRows"); container.replaceChildren();
+    for (const device of result.devices) {
+      const receipt = result.receipts.find(row => row.device_id === device.id);
+      const row = document.createElement("p");
+      const current = receipt && receipt.release_id === result.channel?.release_id;
+      row.append(`${device.device_hash.slice(0,12)}…：${current ? (receipt.status === "applied" ? "適用済み" : "検証失敗") : "未適用／未登録／接続待ち"} ${receipt ? `最終報告 ${new Date(receipt.reported_at).toLocaleString()}` : ""} `);
+      for (const [action, label] of [["enroll","PC登録ファイル発行"],["revoke","配布登録を解除"]]) {
+        const button = document.createElement("button"); button.type = "button"; button.className = "row-action"; button.textContent = label;
+        button.onclick = async () => {
+          if (!confirm(action === "enroll" ? "この端末の登録ファイルを発行します。既存の登録トークンは無効になります。対象PCにだけ渡してください。" : "この端末の今後の受信を停止しますか？適用済みルールは残ります。")) return;
+          try {
+            const data = await policyAdmin(action, {device_id:device.id});
+            if (action === "enroll") {
+              const url = URL.createObjectURL(new Blob([JSON.stringify(data)],{type:"application/json"}));
+              const a = document.createElement("a"); a.href = url; a.download = `ASG-${device.device_hash.slice(0,12)}.asgdelivery`; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+            }
+            showNotice(action === "enroll" ? "登録ファイルを保存しました。秘密情報を含みます。対象PCに安全に渡してください。" : "配布登録を解除しました。");
+          } catch(error) { showNotice(error.message,"error"); }
+        };
+        row.append(button);
+      }
+      container.append(row);
+    }
+  } catch(error) { $("#policyChannelStatus").textContent = error.message; $("#policyDeviceRows").replaceChildren(); }
+}
+$("#policyStatusRefresh").onclick = refreshPolicyDelivery;
+$("#policyPause").onclick = async () => {
+  if (!confirm("今後の配布を停止しますか？適用済みルールは取り消されません。")) return;
+  try { await policyAdmin("pause"); await refreshPolicyDelivery(); } catch(error) { showNotice(error.message,"error"); }
+};
+$("#policyPublish").onclick = async () => {
+  const button = $("#policyPublish"); button.disabled = true;
+  try {
+    const file = $("#policyReleaseFile").files[0]; const label = $("#policyReleaseLabel").value.trim();
+    if (!file || !label || file.size > 1048576) throw new Error("配布名と1MB以内の署名済みルールを指定してください。");
+    if (!confirm("辞書・禁止語・除外語の内容をクラウドに保管し、登録済みPCすべてへ公開します。管理PCで内容を検証済みですか？")) return;
+    const bytes = new Uint8Array(await file.arrayBuffer()); let binary = "";
+    for (let i=0;i<bytes.length;i+=8192) binary += String.fromCharCode(...bytes.subarray(i,i+8192));
+    await policyAdmin("publish", {label, bundle_base64:btoa(binary)});
+    await refreshPolicyDelivery(); showNotice("公開しました。適用状況はPCからの報告後に更新されます。");
+  } catch(error) { showNotice(error.message,"error"); } finally { button.disabled = false; }
+};
 $$(".nav-button").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
 $$('[data-go]').forEach(button => button.addEventListener("click", () => showView(button.dataset.go)));
 $("#menuButton").addEventListener("click", () => $(".sidebar").classList.toggle("open"));

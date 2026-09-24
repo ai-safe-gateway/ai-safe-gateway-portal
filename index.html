@@ -231,6 +231,18 @@
         </section>
 
         <section id="licensesView" class="view">
+          <article class="panel">
+            <h3>社内ルールの一斉配布</h3>
+            <p>管理PCのASGで作成した署名付き.asgpolicyを配布します。初回登録済みPCが起動中・未編集中に取得します。EXEの更新ではありません。</p>
+            <label>配布名<input id="policyReleaseLabel" maxlength="80" placeholder="例：営業部ルール 第2版"></label>
+            <label>署名済みルール（1MB以内）<input id="policyReleaseFile" type="file" accept=".asgpolicy"></label>
+            <p>この操作では辞書・禁止語・除外語をクラウドへ保管します。原文や秘密鍵は選択しないでください。署名と内容は受信PCで検証されます。</p>
+            <button id="policyPublish" type="button" class="primary-small">登録済みPCへ公開</button>
+            <button id="policyPause" type="button" class="secondary-button">配布停止</button>
+            <button id="policyStatusRefresh" type="button" class="secondary-button">適用状況を更新</button>
+            <p id="policyChannelStatus" role="status">企業管理者のみ操作できます。停止しても適用済みルールは戻りません。</p>
+            <div id="policyDeviceRows"></div>
+          </article>
           <div class="page-heading"><div><p class="eyebrow dark">LICENSE CONTROL</p><h2>ライセンス・端末</h2><p>期限切れの判定、ライセンス更新、認証されたPCをまとめて管理します。</p></div><button id="openLicenseModal" class="primary-small" type="button">新規ライセンスを発行</button></div>
           <div id="licenseSummary" class="summary-strip"></div>
           <article class="panel table-panel"><div class="panel-head"><div><h3>ライセンス一覧</h3><p>停止すると次回認証後に書込み機能が無効になります。</p></div></div><div class="table-scroll"><table><thead><tr><th>名称</th><th>プラン</th><th>端末</th><th>有効期限</th><th>状態</th><th>操作</th></tr></thead><tbody id="licenseRows"></tbody></table></div></article>
