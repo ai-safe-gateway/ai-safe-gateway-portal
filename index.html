@@ -8,7 +8,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>AI Safe Gateway | 企業管理ポータル</title>
   <link rel="stylesheet" href="styles.css?v=0.7.1">
-  <link rel="stylesheet" href="production-b.css?v=20260929-layout2">
+  <link rel="stylesheet" href="production-b.css?v=20260929-production3">
 </head>
 <body>
   <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
@@ -129,7 +129,8 @@
               <aside class="asg-product-nav"><small>日常操作</small><span>⌂　ホーム</span><span>✦　AI活用を始める</span><span class="active">◇　文書を安全化</span><span>↺　AI回答を復元</span><span>◎　回答品質を比較</span><small>管理設定</small><span>▦　辞書・禁止ルール</span><span>◉　検出品質</span></aside>
               <div class="asg-product-main">
                 <div class="asg-product-heading"><div><small>PROTECT DOCUMENT</small><h3>文書を安全化</h3><p>機密情報をこのPC内で匿名化し、生成AIで使える形へ整えます。</p></div><span>デモモード</span></div>
-                <p class="asg-b-disclaimer">B正式採用：① 文書・処理設定 → ② 候補一覧＋本文で確認 → ③ 全文比較・出力。これは架空サンプル用の簡易操作デモです。製品版と同じ検出精度・保護動作を提供するものではありません。</p>
+                <p class="asg-b-disclaimer">操作デモ：架空サンプルを使用します。検出エンジン・辞書保存・ファイル出力は製品版とは異なります。</p>
+                <nav class="production-steps" aria-label="文書安全化の手順"><button type="button" data-production-step="1" aria-pressed="true">① 文書・処理設定</button><button type="button" data-production-step="2" aria-pressed="false" disabled>② 候補を確認</button><button type="button" data-production-step="3" aria-pressed="false" disabled>③ 全文比較・出力</button></nav>
                 <section class="asg-workflow-guide">
                   <div><small>次にやること</small><span id="maskProductState"><i></i>現在：サンプルを読込</span></div>
                   <div class="asg-workflow-meter"><div><span id="maskProductProgressText">ファイル選択待ち</span><b id="maskProductProgressValue">15%</b></div><div><i id="maskProductProgressFill"></i></div></div>
@@ -143,7 +144,7 @@
                 <div class="asg-load-actions"><button id="resetMaskDemo" class="secondary-button" type="button">サンプルに戻す</button><button id="analyzeMaskDemo" class="demo-primary" type="button">＋ サンプル議事録を読み込む</button></div>
                 <section class="asg-review-card">
                   <div class="asg-review-head"><div><small>STEP 2 / REVIEW</small><h3>検出候補を確認</h3><p>抽出文字・マスク判断・種別・意味を確認します。</p></div><div class="asg-review-actions"><span id="maskDemoCount" class="count-pill">解析待ち</span><button id="reviewAllMaskDemo" class="secondary-button" type="button" disabled>全てに ✓</button></div></div>
-                  <div class="asg-review-legend"><b>確認する順番</b><span class="attention">● 橙：内容を確認</span><span class="role">● 青：役割を確認</span><span class="done">● 緑：確認済み</span></div>
+                  <div class="asg-review-legend"><span class="attention">色付きの部分</span>を見て、隠す内容が合っているか確認してください。</div>
                   <div id="maskDemoCandidates" class="asg-candidate-table demo-empty-state"><span>＋</span><strong>サンプル議事録を読み込んでください</strong><p>製品版と同じ候補確認画面が表示されます。</p></div>
                   <button id="applyMaskDemo" class="demo-primary full" type="button" disabled>確認した候補で文書を安全化</button>
                 </section>
@@ -279,6 +280,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=20260929-b"></script>
+  <script type="module" src="app.js?v=20260929-production3"></script>
 </body>
 </html>

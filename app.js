@@ -714,6 +714,7 @@ function replaceDemoEntities(text, findings) {
 }
 
 function setMaskDemoStep(step) {
+  showProductionStep(step);
   const config = {
     1: ["現在：サンプルを読込", "ファイル選択待ち", "15%", 15, "サンプル議事録を読み込んでください"],
     2: ["現在：未確認候補あり", "候補を確認中", "60%", 60, "抽出文字・種別・役割を確認してください"],
@@ -725,6 +726,18 @@ function setMaskDemoStep(step) {
   $("#maskProductProgressFill").style.width = `${config[3]}%`;
   $("#maskProductNext").textContent = config[4];
 }
+
+function showProductionStep(step) {
+  const view=$('#windowsdemoView');
+  view.dataset.productionStep=String(step);
+  view.querySelectorAll('[data-production-step]').forEach(button=>{
+    const value=Number(button.dataset.productionStep);
+    button.setAttribute('aria-pressed',String(value===step));
+    button.disabled=value===2?!maskDemoCandidates.length:value===3?$('#maskDemoResult').hidden:false;
+  });
+}
+document.querySelectorAll('[data-production-step]').forEach(button=>button.addEventListener('click',()=>showProductionStep(Number(button.dataset.productionStep))));
+showProductionStep(1);
 
 function renderMaskDemoCandidates() {
   $("#maskDemoFinalAcknowledged").checked=false;

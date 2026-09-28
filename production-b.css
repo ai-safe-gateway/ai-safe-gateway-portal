@@ -1,4 +1,25 @@
 /* B正式採用版の候補一覧＋本文デモ */
+.production-steps{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+#windowsdemoView .asg-review-legend{font-size:14px;line-height:1.8;flex-wrap:wrap}
+.production-steps button{padding:10px 14px;border:1px solid #b9ced3;border-radius:7px;background:white;color:#244d58;cursor:pointer}
+.production-steps button[aria-pressed=true]{background:#137460;color:white}.production-steps button:disabled{opacity:.5;cursor:default}
+#windowsdemoView .asg-workflow-guide,#windowsdemoView .asg-product-heading small,#windowsdemoView .asg-product-heading p,#windowsdemoView .asg-review-head small{display:none}
+#windowsdemoView .asg-product-main{background:#f0f5f5;padding:20px}
+#windowsdemoView .asg-product-heading h3{font-size:22px;margin:0}
+#windowsdemoView .asg-product-nav{display:block;width:190px;min-width:190px;background:#09232e}
+#windowsdemoView .asg-product-nav span{display:block;padding:12px 8px}
+#windowsdemoView .asg-product-nav small{display:block;margin:12px 8px}
+#windowsdemoView[data-production-step="1"] .asg-review-card,#windowsdemoView[data-production-step="1"] .asg-final-review,
+#windowsdemoView[data-production-step="2"] .asg-product-settings,#windowsdemoView[data-production-step="2"] .asg-sample-source,#windowsdemoView[data-production-step="2"] .asg-load-actions,#windowsdemoView[data-production-step="2"] .asg-final-review,
+#windowsdemoView[data-production-step="3"] .asg-product-settings,#windowsdemoView[data-production-step="3"] .asg-sample-source,#windowsdemoView[data-production-step="3"] .asg-load-actions,#windowsdemoView[data-production-step="3"] .asg-review-card{display:none}
+#windowsdemoView .asg-b-list{border:1px solid #cfdee2;border-radius:10px;background:white;gap:0}
+#windowsdemoView .asg-b-list>b{padding:12px}
+#windowsdemoView .asg-b-list button{border:0;border-top:1px solid #e0e9eb;border-left:3px solid transparent;border-radius:0;font-size:16px}
+#windowsdemoView .asg-b-list button[aria-pressed=true]{border-left-color:#08765e}
+#windowsdemoView .asg-b-detail h4{font-size:20px;margin:3px 0}
+#windowsdemoView .asg-b-detail pre{font:16px/1.9 'Segoe UI','Yu Gothic UI',sans-serif;border-radius:8px;max-height:150px;overflow:auto}
+#windowsdemoView .asg-compare-grid pre{font-size:16px;line-height:1.9}
+@media(max-width:1200px){#windowsdemoView .asg-product-nav{display:none}}
 .b-before{background:#fff0ca;color:#744500;border-bottom:2px dashed #bb8115}.b-after{background:#e0f5e9;color:#126042;border-bottom:2px solid #18794e}.asg-b-disclaimer{padding:12px;background:#eef6f5;font-size:13px}
 .asg-b-review{display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px;margin:16px 0}
 .asg-b-list{display:flex;flex-direction:column;gap:8px;max-height:450px;overflow:auto}
@@ -15,6 +36,10 @@
 .asg-b-detail .asg-candidate-row label,.asg-b-detail .asg-candidate-row select,.asg-b-detail .asg-role-box strong,.asg-b-detail .asg-role-box small{font-size:12px}
 .asg-b-detail .asg-mask-switch i{display:none}
 .asg-b-detail .asg-candidate-row input{flex-shrink:0}
+.asg-b-detail .asg-candidate-row>div:first-child,.asg-b-detail .asg-role-box{grid-column:1/-1}
+.asg-b-detail .asg-candidate-row>div:nth-child(2):before{content:'マスクの設定';display:block;font-size:12px;color:#456670;margin-bottom:8px}
+.asg-b-detail .asg-candidate-row>div:nth-child(3):before{content:'情報の種類';display:block;font-size:12px;color:#456670;margin-bottom:8px}
+.asg-b-detail .asg-candidate-row>div:nth-child(2) label,.asg-b-detail .asg-candidate-row select{box-sizing:border-box;min-height:44px;width:100%}
 .asg-compare-grid>*{min-width:0}.asg-compare-grid pre{overflow-wrap:anywhere}
 .asg-b-detail .asg-candidate-row[hidden]{display:none}
 @media(max-width:780px){.asg-b-review{grid-template-columns:1fr}.asg-b-list{max-height:180px}}
