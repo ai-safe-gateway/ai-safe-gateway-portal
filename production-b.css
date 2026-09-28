@@ -8,6 +8,13 @@
 .asg-b-detail{border:1px solid #c6dad5;border-radius:10px;padding:16px;min-width:0}
 .asg-b-detail pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f8f7;padding:14px;line-height:1.8}
 .asg-b-detail mark{background:#fff0ca;color:#744500;border-bottom:2px dashed #bb8115}
-.asg-b-detail .asg-candidate-row{display:flex;flex-wrap:wrap;gap:14px;padding:12px 0}
+.asg-b-detail .asg-candidate-row{min-width:0;width:100%;box-sizing:border-box;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:12px;padding:12px}
+.asg-b-review>*{min-width:0}
+.asg-b-list button,.asg-b-detail h4,.asg-b-detail .asg-candidate-row>div{overflow-wrap:anywhere}
+.asg-b-detail .asg-candidate-term strong{white-space:normal;overflow:visible}
+.asg-b-detail .asg-candidate-row label,.asg-b-detail .asg-candidate-row select,.asg-b-detail .asg-role-box strong,.asg-b-detail .asg-role-box small{font-size:12px}
+.asg-b-detail .asg-mask-switch i{display:none}
+.asg-b-detail .asg-candidate-row input{flex-shrink:0}
+.asg-compare-grid>*{min-width:0}.asg-compare-grid pre{overflow-wrap:anywhere}
 .asg-b-detail .asg-candidate-row[hidden]{display:none}
 @media(max-width:780px){.asg-b-review{grid-template-columns:1fr}.asg-b-list{max-height:180px}}
