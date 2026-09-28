@@ -696,6 +696,7 @@ const MASK_DEMO_RULES = [
   { type: "メール", role: "連絡先", replacement: "[メールA]", pattern: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/giu },
 ];
 let maskDemoCandidates = [];
+let maskDemoActive = 0;
 let guardDemoMode = "text";
 
 function detectDemoEntities(text) {
@@ -726,6 +727,9 @@ function setMaskDemoStep(step) {
 }
 
 function renderMaskDemoCandidates() {
+  $("#maskDemoFinalAcknowledged").checked=false;
+  $("#copyMaskDemo").disabled=true;
+  $("#maskDemoResult").hidden=true;
   const host = $("#maskDemoCandidates");
   $("#maskDemoCount").textContent = `${maskDemoCandidates.length}件を検出`;
   if (!maskDemoCandidates.length) {
@@ -745,6 +749,18 @@ function renderMaskDemoCandidates() {
     <div class="asg-candidate-cell"><span class="asg-judgement">${item.reviewed ? "確認済み" : "要確認"}</span><small>${item.selected ? "マスクを維持" : "除外を確認"}</small></div>
     <div class="asg-role-box"><strong>${escapeHtml(item.role)}</strong><small>${escapeHtml(item.replacement)}として出力</small></div>
   </div>`).join("")}`;
+  host.className = 'asg-b-review';
+  host.querySelector('.asg-candidate-head')?.remove();
+  const rows = [...host.querySelectorAll('.asg-candidate-row')];
+  maskDemoActive = Math.min(maskDemoActive, rows.length - 1);
+  const list = document.createElement('aside');
+  list.className = 'asg-b-list';
+  list.innerHTML = '<b>確認する語句</b>' + maskDemoCandidates.map((item,index)=>`<button type="button" data-b-candidate="${index}" aria-pressed="${index===maskDemoActive}">${escapeHtml(item.original)}<small>${item.reviewed?'✓ 確認済み':'● 未確認'}</small></button>`).join('');
+  const detail = document.createElement('section'); detail.className='asg-b-detail';
+  const item=maskDemoCandidates[maskDemoActive],text=$("#maskDemoInput").value;
+  detail.innerHTML=`<h4>${escapeHtml(item.original)}</h4><p>色付きの部分を見て、隠す内容が合っているか確認してください。</p><pre>${escapeHtml(text.slice(Math.max(0,item.start-55),item.start))}<mark>${escapeHtml(item.original)}</mark>${escapeHtml(text.slice(item.end,item.end+75))}</pre>`;
+  rows.forEach((row,index)=>{row.hidden=index!==maskDemoActive;detail.append(row);});
+  host.replaceChildren(list,detail);
   $("#reviewAllMaskDemo").disabled = false;
   $("#applyMaskDemo").disabled = !maskDemoCandidates.some(item => item.selected) || maskDemoCandidates.some(item => !item.reviewed);
 }
@@ -753,6 +769,7 @@ $("#analyzeMaskDemo").addEventListener("click", () => {
   const text = $("#maskDemoInput").value.trim();
   if (!text) { showNotice("安全化する文章を入力してください。", "error"); return; }
   maskDemoCandidates = detectDemoEntities(text);
+  maskDemoActive = 0;
   renderMaskDemoCandidates();
   $("#maskDemoResult").hidden = true;
   setMaskDemoStep(2);
@@ -761,10 +778,15 @@ $("#analyzeMaskDemo").addEventListener("click", () => {
 $("#maskDemoCandidates").addEventListener("change", event => {
   const maskInput = event.target.closest("[data-mask-demo-index]");
   const reviewInput = event.target.closest("[data-mask-demo-review-index]");
-  if (maskInput) maskDemoCandidates[Number(maskInput.dataset.maskDemoIndex)].selected = maskInput.checked;
+  if (maskInput) { const item=maskDemoCandidates[Number(maskInput.dataset.maskDemoIndex)]; item.selected = maskInput.checked; item.reviewed=false; }
   if (reviewInput) maskDemoCandidates[Number(reviewInput.dataset.maskDemoReviewIndex)].reviewed = reviewInput.checked;
   if (!maskInput && !reviewInput) return;
   renderMaskDemoCandidates();
+});
+
+$("#maskDemoCandidates").addEventListener('click',event=>{
+  const button=event.target.closest('[data-b-candidate]');
+  if(button){maskDemoActive=Number(button.dataset.bCandidate);renderMaskDemoCandidates();}
 });
 
 $("#reviewAllMaskDemo").addEventListener("click", () => {
@@ -780,8 +802,10 @@ $("#reviewAllMaskDemo").addEventListener("click", () => {
 $("#applyMaskDemo").addEventListener("click", () => {
   const selected = maskDemoCandidates.filter(item => item.selected);
   if (!selected.length) return;
-  $("#maskDemoOriginalPreview").textContent = $("#maskDemoInput").value;
-  $("#maskDemoOutput").textContent = replaceDemoEntities($("#maskDemoInput").value, selected);
+  const text=$("#maskDemoInput").value;
+  const highlighted=masked=>{let at=0,result='';for(const item of selected){result+=escapeHtml(text.slice(at,item.start))+`<mark class="${masked?'b-after':'b-before'}">${escapeHtml(masked?item.replacement:item.original)}</mark>`;at=item.end;}return result+escapeHtml(text.slice(at));};
+  $("#maskDemoOriginalPreview").innerHTML = highlighted(false);
+  $("#maskDemoOutput").innerHTML = highlighted(true);
   $("#maskDemoMapping").innerHTML = selected.map(item => `<span>${escapeHtml(item.original)}<b>→ ${escapeHtml(item.replacement)}</b></span>`).join("");
   $("#maskDemoResult").hidden = false;
   setMaskDemoStep(3);
@@ -801,9 +825,12 @@ $("#resetMaskDemo").addEventListener("click", () => {
 });
 
 $("#copyMaskDemo").addEventListener("click", async () => {
+  if(!$("#maskDemoFinalAcknowledged").checked)return;
   try { await navigator.clipboard.writeText($("#maskDemoOutput").textContent); showNotice("安全化済み文章をコピーしました。"); }
   catch { showNotice("コピーできませんでした。文章を選択してコピーしてください。", "error"); }
 });
+$("#maskDemoFinalAcknowledged").addEventListener('change',()=>{$('#copyMaskDemo').disabled=!$('#maskDemoFinalAcknowledged').checked;});
+$("#maskDemoInput").addEventListener('input',()=>{maskDemoCandidates=[];renderMaskDemoCandidates();});
 
 function updateGuardFlow(step) {
   $$(".guard-flow li").forEach((item, index) => {

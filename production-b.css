@@ -1,0 +1,13 @@
+/* B正式採用版の候補一覧＋本文デモ */
+.b-before{background:#fff0ca;color:#744500;border-bottom:2px dashed #bb8115}.b-after{background:#e0f5e9;color:#126042;border-bottom:2px solid #18794e}.asg-b-disclaimer{padding:12px;background:#eef6f5;font-size:13px}
+.asg-b-review{display:grid;grid-template-columns:220px minmax(0,1fr);gap:16px;margin:16px 0}
+.asg-b-list{display:flex;flex-direction:column;gap:8px;max-height:450px;overflow:auto}
+.asg-b-list button{text-align:left;border:1px solid #b7d2cd;background:white;border-radius:8px;padding:12px;cursor:pointer;color:#153e43}
+.asg-b-list button[aria-pressed=true]{background:#e5f4ed;border-left:4px solid #087969}
+.asg-b-list small{display:block;margin-top:5px}
+.asg-b-detail{border:1px solid #c6dad5;border-radius:10px;padding:16px;min-width:0}
+.asg-b-detail pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f8f7;padding:14px;line-height:1.8}
+.asg-b-detail mark{background:#fff0ca;color:#744500;border-bottom:2px dashed #bb8115}
+.asg-b-detail .asg-candidate-row{display:flex;flex-wrap:wrap;gap:14px;padding:12px 0}
+.asg-b-detail .asg-candidate-row[hidden]{display:none}
+@media(max-width:780px){.asg-b-review{grid-template-columns:1fr}.asg-b-list{max-height:180px}}

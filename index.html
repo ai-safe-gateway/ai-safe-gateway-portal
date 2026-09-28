@@ -8,6 +8,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://*.supabase.co; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'">
   <title>AI Safe Gateway | 企業管理ポータル</title>
   <link rel="stylesheet" href="styles.css?v=0.7.1">
+  <link rel="stylesheet" href="production-b.css?v=20260928">
 </head>
 <body>
   <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
@@ -128,6 +129,7 @@
               <aside class="asg-product-nav"><small>日常操作</small><span>⌂　ホーム</span><span>✦　AI活用を始める</span><span class="active">◇　文書を安全化</span><span>↺　AI回答を復元</span><span>◎　回答品質を比較</span><small>管理設定</small><span>▦　辞書・禁止ルール</span><span>◉　検出品質</span></aside>
               <div class="asg-product-main">
                 <div class="asg-product-heading"><div><small>PROTECT DOCUMENT</small><h3>文書を安全化</h3><p>機密情報をこのPC内で匿名化し、生成AIで使える形へ整えます。</p></div><span>デモモード</span></div>
+                <p class="asg-b-disclaimer">B正式採用：① 文書・処理設定 → ② 候補一覧＋本文で確認 → ③ 全文比較・出力。これは架空サンプル用の簡易操作デモです。製品版と同じ検出精度・保護動作を提供するものではありません。</p>
                 <section class="asg-workflow-guide">
                   <div><small>次にやること</small><span id="maskProductState"><i></i>現在：サンプルを読込</span></div>
                   <div class="asg-workflow-meter"><div><span id="maskProductProgressText">ファイル選択待ち</span><b id="maskProductProgressValue">15%</b></div><div><i id="maskProductProgressFill"></i></div></div>
@@ -149,7 +151,9 @@
                   <div class="asg-review-head"><div><small>STEP 3 / FINAL CHECK</small><h3>原文とマスク後を比較</h3></div><span class="safe-pill">✓ 安全化完了</span></div>
                   <div class="asg-compare-grid"><article><header><b>原文</b><small>ローカル表示</small></header><pre id="maskDemoOriginalPreview"></pre></article><article class="masked"><header><b>マスク後</b><small>意味保持匿名化</small></header><pre id="maskDemoOutput"></pre></article></div>
                   <div class="asg-mapping-panel"><h4>意味対応</h4><div id="maskDemoMapping" class="mapping-list"></div></div>
-                  <div class="demo-result-actions"><button id="copyMaskDemo" class="secondary-button" type="button">安全化文をコピー</button><button class="demo-primary" data-go="browserdemo" type="button">Browser Guardで確認 →</button></div>
+                  <p>原文の橙色・破線：置換対象／マスク後の緑色・実線：置換結果。色なし：変更なし。</p>
+                  <label><input id="maskDemoFinalAcknowledged" type="checkbox"> 原文とマスク後の文書全体を確認しました</label>
+                  <div class="demo-result-actions"><button id="copyMaskDemo" class="secondary-button" type="button" disabled>安全化文をコピー</button><button class="demo-primary" data-go="browserdemo" type="button">Browser Guardで確認 →</button></div>
                 </section>
               </div>
             </div>
@@ -275,6 +279,6 @@
   <dialog id="newPasswordDialog" class="modal"><form id="newPasswordForm"><div class="modal-head"><div><h2>新しいパスワードを設定</h2><p>英数字を含む12文字以上を推奨します。</p></div></div><label>新しいパスワード<input id="newPassword" type="password" required minlength="12" autocomplete="new-password"></label><div class="modal-actions"><button class="primary-small" type="submit">パスワードを変更</button></div></form></dialog>
 
   <script src="config.js"></script>
-  <script type="module" src="app.js?v=0.7.7"></script>
+  <script type="module" src="app.js?v=20260929-b"></script>
 </body>
 </html>
