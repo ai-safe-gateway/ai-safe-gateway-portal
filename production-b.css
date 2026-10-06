@@ -1,4 +1,5 @@
 /* B正式採用版の候補一覧＋本文デモ */
+.license-actions{flex-wrap:wrap}.license-more summary{cursor:pointer;font-size:12px;color:#456670;padding:8px}.license-more>div{padding:6px 0}.license-more button{white-space:normal;max-width:220px}
 .production-steps{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 #windowsdemoView .asg-review-legend{font-size:14px;line-height:1.8;flex-wrap:wrap}
 .production-steps button{padding:10px 14px;border:1px solid #b9ced3;border-radius:7px;background:white;color:#244d58;cursor:pointer}

@@ -612,11 +612,11 @@ function renderLicenses() {
     const effectiveState = licenseState(item);
     const active = effectiveState === "active";
     const action = active ? "suspend" : "activate";
-    const actionLabel = active ? "一時停止" : "再開";
+    const actionLabel = active ? "ライセンスの利用を停止する" : "ライセンスの利用を再開する";
     const statusLabel = effectiveState === "expired" ? "期限切れ" : active ? "有効" : "停止";
     const statusClass = effectiveState === "expired" ? "expired" : active ? "" : "danger";
     const stateButton = effectiveState === "expired" ? "" : `<button class="row-action ${active ? "danger-outline" : ""}" type="button" data-license-id="${escapeHtml(item.id)}" data-license-action="${action}">${actionLabel}</button>`;
-    const operations = canManage ? `<div class="license-actions"><button class="row-action renew" type="button" data-license-renew="${escapeHtml(item.id)}">更新</button>${stateButton}</div>` : "—";
+    const operations = canManage ? `<div class="license-actions"><button class="row-action renew" type="button" data-license-renew="${escapeHtml(item.id)}">更新</button>${stateButton ? `<details class="license-more"><summary>その他の操作</summary><div>${stateButton}</div></details>` : ""}</div>` : "—";
     return `<tr><td><strong>${escapeHtml(item.label)}</strong><br><code>${escapeHtml(item.id.slice(0,8))}…</code></td><td>${escapeHtml(item.edition)}</td><td>${used} / ${item.seats}</td><td>${formatDate(item.expires_at)}</td><td><span class="status-badge ${statusClass}">${statusLabel}</span></td><td>${operations}</td></tr>`;
   }).join("") : `<tr><td colspan="6">ライセンスはありません。</td></tr>`;
   $("#deviceRows").innerHTML = state.devices.length ? state.devices.map(item => {
