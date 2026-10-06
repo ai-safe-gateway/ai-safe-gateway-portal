@@ -131,7 +131,7 @@ async function fetchJson(url, options = {}) {
   const response = await fetch(url, options);
   const text = await response.text();
   let body = {}; try { body = text ? JSON.parse(text) : {}; } catch { body = { message: text }; }
-  if (!response.ok) throw new Error(body.error_description || body.msg || body.message || body.error || `HTTP ${response.status}`);
+  if (!response.ok) { const error=new Error(body.error_description || body.msg || body.message || body.error || `HTTP ${response.status}`); error.status=response.status; throw error; }
   return body;
 }
 async function authRequest(path, body) {
@@ -142,7 +142,15 @@ async function rest(path) {
 }
 async function invoke(name, body) {
   const base = config.functionsBaseUrl || `${config.supabaseUrl}/functions/v1`;
-  return fetchJson(`${base}/${name}`, { method: "POST", headers: sessionHeaders(), body: JSON.stringify(body) });
+  const send=()=>fetchJson(`${base}/${name}`, { method: "POST", headers: sessionHeaders(), body: JSON.stringify(body) });
+  try { return await send(); }
+  catch(error) {
+    if(error.status!==401) throw error;
+    try { await refreshSession(state.session?.refresh_token); }
+    catch { throw new Error('ログインの有効期限が切れました。ログアウトして、もう一度ログインしてください。'); }
+    try { return await send(); }
+    catch(retryError) { if(retryError.status===401) throw new Error('認証を確認できません。再ログイン後も続く場合は管理者へお問い合わせください。'); throw retryError; }
+  }
 }
 
 function clearStoredSession() {
@@ -300,8 +308,13 @@ function renderPortal() {
   $("#licenseEdition").disabled = trial;
   if (trial) $("#licenseEdition").value = "Business";
   $("#licenseSeats").max = trial ? "25" : "500";
-  $("#licenseDays").max = trial ? "60" : "1095";
-  $("#renewLicenseDays").max = trial ? "60" : "1095";
+  for(const id of ['licenseDays','renewLicenseDays']) {
+    const input=$('#'+id);input.max=trial?'60':'365';input.value=trial?'30':'365';input.readOnly=!trial;
+    const label=input.closest('label');
+    if(label?.firstChild?.nodeType===3)label.firstChild.textContent=trial?'評価期間（日数・最大60日）':'年間契約（1年間）';
+  }
+  $('#licenseDialog h2').textContent=trial?'評価ライセンスを発行':'年間ライセンスを発行';
+  $('#licenseRenewDialog h2').textContent=trial?'評価ライセンスを更新':'年間ライセンスを1年間更新';
   renderDashboard(); renderLicenses(); renderMyPage(); renderDownloads();
 }
 
